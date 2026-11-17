@@ -1,0 +1,7 @@
+# Keep experiment sources and raw snapshots byte-for-byte, so the recorded
+# SHA-256 manifests remain valid with Windows core.autocrlf settings.
+guisheng-dai/R/** -text
+guisheng-dai/src/** -text
+guisheng-dai/scripts/** -text
+guisheng-dai/config.R -text
+guisheng-dai/results/** -text

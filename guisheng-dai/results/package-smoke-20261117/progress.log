@@ -1,0 +1,13 @@
+14:03:44 E1/E2 N8_n8_M256 
+14:03:44 E3 N16_c2 
+14:03:44 E3 N16_c4 
+14:03:44 E4 poly_N16_c8 
+14:03:44 E4 poly_N32_c8 
+14:03:44 E5 timing stage; no concurrent figure generation 
+14:03:45 E5 MC M 1024 complete 
+14:03:45 E5 Gaussian N 128 complete 
+14:03:45 E6 mc_N16_n32_M1024_8points 
+14:03:45 E6 conv_N512_c2_8points 
+14:03:45 E6 conv_N512_c3_8points 
+14:03:45 E6 conv_N512_c4_8points 
+14:03:45 Complete; runtime seconds 1.102 

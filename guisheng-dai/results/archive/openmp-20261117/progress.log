@@ -1,0 +1,33 @@
+09:34:45 E1/E2 N8_n8_M256 
+09:34:45 E1/E2 N8_n8_M1024 
+09:34:45 E1/E2 N8_n8_M4096 
+09:34:45 E1/E2 N8_n8_M16384 
+09:34:45 E1/E2 N16_n32_M256 
+09:34:45 E1/E2 N16_n32_M1024 
+09:34:45 E1/E2 N16_n32_M4096 
+09:34:45 E1/E2 N16_n32_M16384 
+09:34:46 E1/E2 N32_n128_M4096 
+09:34:46 E3 N512_c1 
+09:34:47 E3 N512_c2 
+09:34:49 E3 N512_c3 
+09:34:50 E3 N512_c4 
+09:34:52 E3 N512_c6 
+09:34:53 E3 N512_c8 
+09:34:55 E3 N512_c10 
+09:34:57 E4 poly_N16_c8 
+09:34:57 E4 poly_N32_c8 
+09:34:57 E4 poly_N64_c8 
+09:34:57 E4 poly_N128_c8 
+09:34:58 E5 timing stage; no concurrent figure generation 
+09:35:03 E5 MC M 4096 complete 
+09:35:09 E5 MC M 65536 complete 
+09:35:14 E5 Gaussian N 512 complete 
+09:35:19 E5 Gaussian N 2048 complete 
+09:35:24 E5 Gaussian N 8192 complete 
+09:35:26 E6 mc_N16_n32_M1024_8points 
+09:35:26 E6 mc_N16_n32_M4096_8points 
+09:35:27 E6 mc_N16_n32_M16384_8points 
+09:35:27 E6 conv_N512_c2_8points 
+09:35:28 E6 conv_N512_c3_8points 
+09:35:29 E6 conv_N512_c4_8points 
+09:35:34 Complete; runtime seconds 47.502 

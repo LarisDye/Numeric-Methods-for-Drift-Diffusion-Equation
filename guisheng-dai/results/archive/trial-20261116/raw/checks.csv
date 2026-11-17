@@ -1,0 +1,11 @@
+"check","max_difference","passed"
+"kernel_ref_c8_c10",3.88578058618805e-16,TRUE
+"spectral31_63_N16",0,TRUE
+"spectral31_63_N32",0,TRUE
+"spectral31_63_N64",0,TRUE
+"spectral31_63_N128",0,TRUE
+"MC_parallel_M4096",0,TRUE
+"MC_parallel_M65536",0,TRUE
+"Gaussian_parallel_N512",0,TRUE
+"Gaussian_parallel_N2048",0,TRUE
+"Gaussian_parallel_N8192",0,TRUE

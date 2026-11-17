@@ -1,0 +1,8 @@
+"test","passed","detail"
+"compiled_and_actual_teams",TRUE,"_OPENMP 201511 compiler 14.3.0"
+"MC_blockwise_bit_identical",TRUE,""
+"MC_aggregate_bit_identical",TRUE,""
+"MC_rng_and_inputs_read_only",TRUE,""
+"CMRG_matches_R_serial_paths",TRUE,""
+"Gaussian_output_bit_identical",TRUE,""
+"Gaussian_raw_boundary_and_inputs",TRUE,""

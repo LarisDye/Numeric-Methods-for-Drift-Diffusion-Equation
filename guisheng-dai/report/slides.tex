@@ -1,0 +1,104 @@
+\documentclass[UTF8,aspectratio=169,10pt]{ctexbeamer}
+\usepackage{etoolbox,tikz,booktabs,amsmath,amssymb,graphicx}
+\makeatletter\def\input@path{{template/theme/}}\makeatother
+\usetheme{CleanEasy}\AtBeginSection[]{}
+\title[漂移扩散方程数值实验]{漂移扩散方程数值实验}
+\subtitle{反向随机游走与 Gaussian 宽核直接卷积\\临时实验报告}
+\author{}\institute{}\date[]{2026年11月17日}
+\hypersetup{pdfauthor={},pdftitle={漂移扩散方程数值实验演示}}
+\newcommand{\pic}[1]{\begin{center}\includegraphics[width=.92\linewidth,height=5.1cm,keepaspectratio]{figures/#1.pdf}\end{center}}
+\begin{document}
+\begin{frame}[plain]\titlepage\end{frame}
+\begin{frame}{模型与比较任务}
+\[
+u_t=0.2u_x+0.05u_{xx},\quad 0<x<1,\quad T=0.5
+\]
+\[
+u(0,t)=u(1,t)=0,\qquad f=e^{-2x}\sin(\pi x)
+\]
+\[
+u_\star=e^{-2x-(0.05\pi^2+0.2)t}\sin(\pi x)
+\]
+\begin{itemize}
+\item 内部 RMSE 与边界残差分别记录。
+\item R 层串行组织实验；C++ OpenMP 使用一、二、四线程。
+\item 30 批独立随机重复，性能预热后重复 7 次。
+\end{itemize}\end{frame}
+\begin{frame}{反向随机游走}
+\[
+p_\pm=D\tau/h^2\pm a\tau/(2h),\qquad p_0=1-2D\tau/h^2
+\]
+\[
+Y=f(X_n)\mathbf1_{\{\text{未触边}\}},\qquad \widehat u=M^{-1}\sum Y_k
+\]
+\begin{itemize}
+\item 从查询点出发，逐步吸收，触边贡献为零。
+\item 分母包含所有路径，每查询点固定 16 个逻辑块。
+\item OpenMP 分配路径块，私有随机流，按块序归约。
+\end{itemize}
+\begin{exampleblock}{正确性}23 项一线程 E0 测试通过，包含同流、吸收、手算宽核及解析核验；另通过 7 项 OpenMP 集成核验。\end{exampleblock}
+\end{frame}
+\begin{frame}{随机游走的两类误差}
+\pic{mc_error}
+\small 增大路径数降低抽样方差；粗网格总误差受离散偏差限制。每配置独立 30 批。
+\end{frame}
+\begin{frame}{固定路径数的网格影响}
+\pic{mc_grid}
+\small 离散偏差持续下降；固定 $M=4096$ 的总 RMSE 还受抽样噪声影响，可遮住网格改善。
+\end{frame}
+\begin{frame}{正确零边界的 Gaussian 直接卷积}
+\[
+v=e^{\beta x+\gamma t}u,\quad g=e^{\beta x}f,\quad v_t=Dv_{xx}
+\]
+\[
+u(x,T)=e^{-\beta x-\gamma T}\int_{\mathbb R}G_T(z)\widetilde g(x-z)\,dz
+\]
+\begin{enumerate}
+\item 对变换后的 $g$ 作两端奇延拓，形成周期 2 的辅助输入。
+\item Gaussian 宽窗口直接内积，输入只读、输出独立。
+\item 乘指数因子变回原解，记录端点置零前残差。
+\end{enumerate}
+\begin{block}{实现}OpenMP 按输出点并行；RcppArmadillo 的 \texttt{subvec} 与 \texttt{dot} 完成每个窗口。\end{block}
+\end{frame}
+\begin{frame}{卷积核大小的选择}
+\[
+s_T=\sqrt{2DT},\quad K=\lceil c s_T/h\rceil,\quad W=2K+1
+\]
+\begin{itemize}
+\item $c$ 决定物理覆盖，$h$ 将范围换算成数组长度。
+\item 左右对称加中心点，使奇延拓边界贡献成对抵消。
+\item $N=512,c=3$ 时 $K=344,W=689$。
+\item 截断后不重新归一化。更宽的核需要更多计算。
+\end{itemize}
+\begin{exampleblock}{实验控制}核大小实验固定网格；网格实验固定物理覆盖。\end{exampleblock}
+\end{frame}
+\begin{frame}{核大小与精度、成本}
+\pic{kernel}
+\small $W=231$ 到 $917$，RMSE 从 $3.84\times10^{-2}$ 降至 $1.62\times10^{-5}$；$W=1375$ 为 $1.90\times10^{-10}$。
+\end{frame}
+\begin{frame}{宽核下的网格求积误差}
+\pic{grid}
+\small 多项式初值 $e^{-2x}x(1-x)$，$c=8$；本组观测阶 4.01--4.03，不推广为任意初值的统一结论。
+\end{frame}
+\begin{frame}{并行任务与计时范围}
+\begin{itemize}
+\item R 串行调度；C++ 用 OpenMP 并行循环，BLAS 单线程。
+\item MC 私有 RNG、固定块序归约；卷积共享完整奇延拓。
+\item 串并行预测与 MC 计数一致，预热后重复计时 7 次。
+\item $t_{\rm solve}$ 含 R/C++ 调用、fork/join、计算与归约。
+\end{itemize}
+\[
+t_{\rm new}=t_{\rm input}+t_{\rm solve},\qquad
+t_{\rm once}=t_{\rm new}+t_{\rm OpenMP\ init}
+\]
+\begin{block}{首次请求及核验：单次 R 包装调用观测}两线程 1.001 ms，四线程 0.534 ms，含检查且可复用既有线程。$t_{\rm once}$ 不是新 R 进程冷启动；随机流分配、编译、预热与真值核验不计时。\end{block}
+\end{frame}
+\begin{frame}{并行收益取决于任务规模}
+\pic{speedup}
+\small 本次大任务四线程：MC \textbf{3.49 倍}，卷积 \textbf{3.66 倍}。个别 $S_p$ 略高于 $p$ 可由有限次数计时、频率及调度波动引起，不构成超线性加速保证。
+\end{frame}
+\begin{frame}{共同查询任务的精度与成本}
+\pic{cost}
+\small 共同 8 点、两线程。MC $M=16384$ 与卷积 $c=2$ 的新输入成本比为 \textbf{69.6}，加首次请求核验观测后为 16.0；结论限于本次问题。
+\end{frame}
+\end{document}

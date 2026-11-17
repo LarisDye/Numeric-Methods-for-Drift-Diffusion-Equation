@@ -1,0 +1,21 @@
+# Local caches and build products, for every contributor directory.
+.cache/
+tmp/
+__pycache__/
+*.pyc
+*.o
+*.dll
+*.aux
+**/report/*.log
+*.out
+*.nav
+*.snm
+*.toc
+*.vrb
+*.synctex.gz
+
+# R session files and editor-local settings.
+.Rhistory
+.RData
+.Rproj.user/
+.vscode/
