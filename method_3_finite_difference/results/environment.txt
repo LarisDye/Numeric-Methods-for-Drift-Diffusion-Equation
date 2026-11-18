@@ -1,0 +1,29 @@
+Recorded (UTC): 2026-11-16 12:48:31 UTC
+Chip: Apple M3
+Total Number of Cores: 8 (4 Performance and 4 Efficiency)
+Memory: 16 GB
+Domain=[0,1]; a=0.2; D=0.05; T=0.5; f=exp(-2*x)*sin(pi*x); endpoints=0
+Precision=float64; solver_threads=1; nodes x_j=j/N for j=0,...,N
+Timing rounds: 9   order seed: 2026   target batch ms: 10
+One C++ steady_clock batch / batch size; includes per-solve allocation, implicit factorization and stepping.
+R/C++ marshalling, validation, basic stencil coefficients, initial function sampling, compilation, reference, error metrics and I/O are outside timed batches.
+Rcpp: 1.1.1
+R version 4.4.2 (2024-10-31)
+Platform: aarch64-apple-darwin20
+Running under: macOS 26.6.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+
+locale:
+[1] C.UTF-8/C.UTF-8/C.UTF-8/C/C.UTF-8/C.UTF-8
+
+time zone: Asia/Taipei
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+[1] compiler_4.4.2 tools_4.4.2    Rcpp_1.1.1    
