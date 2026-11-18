@@ -1,6 +1,6 @@
 # 方法三　有限差分网格实验
 
-用 R 调度同一份单线程 Rcpp 求解器，比较显式 Euler、隐式 Euler、Crank–Nicolson 三种时间格式的终态误差与耗时。物理设置和解析基准见[共同实验方案](../guisheng-dai/numeric-experiment-plan.md)。图表解读见 [Word 实验报告](report/方法三_有限差分网格实验.docx)。
+用 R 调度同一份单线程 Rcpp 求解器，比较显式 Euler、隐式 Euler、Crank–Nicolson 三种时间格式的终态误差与耗时。物理设置和解析基准见[共同实验方案](../../guisheng-dai/numeric-experiment-plan.md)。图表解读见 [Word 实验报告](report/方法三_有限差分网格实验.docx)。
 
 ## 复现实验
 

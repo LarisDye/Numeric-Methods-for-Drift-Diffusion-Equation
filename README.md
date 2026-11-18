@@ -5,7 +5,7 @@
 ## 分工
 
 - **Guisheng Dai**：负责前两种解法——反向吸收随机游走（Monte Carlo）和 Gaussian 宽核直接卷积，包括 R 参考实现、Rcpp/RcppArmadillo 核心、OpenMP 并行、边界处理、正确性验证、精度与性能实验，以及对应报告和演示稿。全部工作独立放在 [`guisheng-dai/`](guisheng-dai/)。
-- **zzzzzzaaaaaqwer**：负责后两种解法——有限差分法和物理信息神经网络（PINN），提出三种差分格式的网格精度与耗时对比、PINN 训练改进对比及更换初值的实验安排。本次提交有限差分部分，独立放在 [`method_3_finite_difference/`](method_3_finite_difference/)；PINN 与后续对比另行提交。
+- **zhengxuan_gu**：负责后两种解法——有限差分法和物理信息神经网络（PINN），提出三种差分格式的网格精度与耗时对比、PINN 训练改进对比及更换初值的实验安排。个人成果统一放在 [`zhengxuan_gu/`](zhengxuan_gu/)，目前包含有限差分部分；PINN 与后续对比另行提交。
 
 `idea.md` 是共同的项目设想。两部分工作应统一物理问题、参数、初边值、查询位置和误差定义，合作者可在自己的独立目录中继续开发。
 
@@ -25,16 +25,16 @@ Set-Location guisheng-dai
 
 随后按照该目录中的 README 安装依赖、编译和运行。R 层串行组织实验；C++ 求解器使用 OpenMP，正式实验默认 2 线程，性能比较 1/2/4 线程。若为 R 算法增加并行，则采用 R 多进程，不叠加嵌套并行。
 
-## zzzzzzaaaaaqwer 的交付：方法三
+## zhengxuan_gu 的交付：方法三
 
 使用 R 调度单线程 Rcpp 求解器，比较显式 Euler、隐式 Euler 和 Crank–Nicolson。保存网格加密、重复计时、空间与时间误差分解，以及隐式格式的大时间步精度检查。
 
-- [实现、复现与工具使用说明](method_3_finite_difference/README.md)
-- [Word 实验说明](method_3_finite_difference/report/方法三_有限差分网格实验.docx)
-- [网格精度与耗时图](method_3_finite_difference/results/figures/grid_comparison.png) · [原始结果与汇总](method_3_finite_difference/results/)
-- [求解器测试](method_3_finite_difference/tests/test_solver.R)
+- [实现、复现与工具使用说明](zhengxuan_gu/method_3_finite_difference/README.md)
+- [Word 实验说明](zhengxuan_gu/method_3_finite_difference/report/方法三_有限差分网格实验.docx)
+- [网格精度与耗时图](zhengxuan_gu/method_3_finite_difference/results/figures/grid_comparison.png) · [原始结果与汇总](zhengxuan_gu/method_3_finite_difference/results/)
+- [求解器测试](zhengxuan_gu/method_3_finite_difference/tests/test_solver.R)
 
-运行前先进入 `method_3_finite_difference/`，按该目录的 README 安装依赖并执行测试与实验。
+运行前先进入 `zhengxuan_gu/method_3_finite_difference/`，按该目录的 README 安装依赖并执行测试与实验。
 
 ## 本次整理
 
