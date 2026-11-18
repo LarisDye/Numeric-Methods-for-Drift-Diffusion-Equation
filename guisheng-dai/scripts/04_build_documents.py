@@ -1,27 +1,40 @@
 """Build PDF report and Beamer presentation sources from actual measurements."""
 from pathlib import Path
 import argparse, json
+# 本脚本消费已汇总的实际测量值，只写 LaTeX 与演示内容 JSON；不执行实验，也不编译 PDF/PPTX。
 root=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--summary",type=Path,default=root/"report/summary.json")
 parser.add_argument("--report-dir",type=Path,default=root/"report")
 parser.add_argument("--run-id",help="Override the measured run identifier recorded in summary.json")
 parser.add_argument("--date",default="2026-11-17",help="Document date (YYYY-MM-DD, Beijing date)")
-args=parser.parse_args();report=args.report_dir;report.mkdir(parents=True,exist_ok=True)
+args=parser.parse_args();report=args.report_dir
+# The presentation deck is maintained by hand; regenerating it would erase edits.
+if report.resolve() == (root/"presentation/report").resolve():
+ parser.error("presentation/report contains the hand-edited deck. "
+              "Compile it with presentation/report/build_slides.py; "
+              "generate template documents into a different directory.")
+report.mkdir(parents=True,exist_ok=True)
 S=json.loads(args.summary.read_text(encoding="utf-8"))
+# 将浮点数格式化成 LaTeX 科学计数法，仅影响展示，统计量仍在汇总脚本中计算。
 def sci(x):
  a,b=f"{x:.2e}".split("e")
  return a+r"\times10^{"+str(int(b))+"}"
+# 模板用 @@键名@@ 作明确占位符；直接替换为展示文本，避免 LaTeX 大括号与 Python 格式语法冲突。
 def fill(text,values):
  for k,v in values.items():text=text.replace("@@"+k+"@@",str(v))
  return text
+# 按配置字段精确选取一条汇总记录；缺少要求配置时 next() 会报错，阻止用错数据继续成稿。
 def sel(rows,**kw):return next(r for r in rows if all(r.get(k)==v for k,v in kw.items()))
 P=S["performance"];K=S["kernel"];M=S["mc"];C=S["cost"];G=S["grid"]
+# 以下选取固定的 full 实验设计：大任务四线程性能、共同查询成本、N=512 小任务等。
+# 因此该模板不是任意配置自动报告器；smoke 或删减版汇总可能缺少必需的行。
 pm=sel(P,method="MC",M=65536,p=4);pc=sel(P,method="Gaussian",N=8192,p=4)
 cm=sel(C,method="MC",M=16384);cc=sel(C,method="Gaussian",c=2)
 small1=sel(P,method="Gaussian",N=512,p=1);small4=sel(P,method="Gaussian",N=512,p=4)
 run_id=args.run_id or S.get("run_id")
 if not run_id:raise ValueError("summary.json must identify run_id, or pass --run-id")
+# 明确拒绝旧的进程并行结果，保证文稿中的线程和 OpenMP 计时描述与数据来源一致。
 if S.get("backend")!="OpenMP":raise ValueError("Rebuild measurements and summary with the OpenMP backend first")
 init={p:float(sel(P,method="MC",M=65536,p=p)["t_openmp_init"]) for p in [2,4]}
 date=args.date;date_zh="{}年{}月{}日".format(*map(int,date.split("-")))
@@ -29,6 +42,7 @@ k1=sel(K,c=1);k4=sel(K,c=4);k6=sel(K,c=6);k10=sel(K,c=10)
 small_comparison="高于" if small4["median"]>small1["median"] else "低于"
 small_observation=f'本次 $N=512$ 卷积四线程耗时{small_comparison}单线程；小任务仍须实测线程开销。'
 cost_ratio_once=cm["once"]/cc["once"]
+# V 集中保存格式化后的数值、日期和实验标识；两份 LaTeX 文稿共享它，避免手工拷数不一致。
 V={"RUNTIME":f'{S["runtime"]:.1f}',"MCSPEED":f'{pm["speedup"]:.2f}',"CVSPEED":f'{pc["speedup"]:.2f}',
 "RATIO":f'{cm["warm_new_input"]/cc["warm_new_input"]:.1f}',
 "DATE":date,"DATEZH":date_zh,"RUNID":run_id.replace("_",r"\_"),"TESTS":S["tests"],"OMPTESTS":S["openmp_tests"],"TIMINGROWS":S["raw_timing_rows"],
@@ -45,6 +59,7 @@ V={"RUNTIME":f'{S["runtime"]:.1f}',"MCSPEED":f'{pm["speedup"]:.2f}',"CVSPEED":f'
 "MINORDER":f'{min(r["order"] for r in G if r["order"] is not None):.2f}',
 "MAXORDER":f'{max(r["order"] for r in G if r["order"] is not None):.2f}'}
 V["SUPERIDEAL"]="个别 $S_p$ 略高于 $p$ 可由有限次数计时、频率及调度波动引起，不构成超线性加速保证。"
+# 表格每一行由结构化汇总生成；选择哪些预算用于正文是固定的排版决定，不改变原始数据。
 rows=[]
 for N in [8,16]:
  for m in [256,4096,16384]:
@@ -56,6 +71,7 @@ V["GRIDROWS"]="\n".join(str(r["N"])+' & $'+sci(r["RMSE"])+'$ & '+("--" if r["ord
 chosen=[sel(P,method="MC",M=65536,p=p) for p in [1,2,4]]+[sel(P,method="Gaussian",N=8192,p=p) for p in [1,2,4]]
 V["PERFROWS"]="\n".join(f'{("MC" if r["method"]=="MC" else "卷积")} & {r["p"]} & {r["median"]*1000:.2f} & [{r["Q1"]*1000:.2f}, {r["Q3"]*1000:.2f}] & {r["speedup"]:.2f} & {100*r["efficiency"]:.1f}\\% '+r"\\" for r in chosen)
 V["COSTROWS"]="\n".join((f'MC, $M={int(r["M"])}$' if r["method"]=="MC" else f'Gaussian, $c={int(r["c"])}$')+' & $'+sci(r["RMSE"])+f'$ & {r["warm_new_input"]*1000:.3f} & {r["once"]*1000:.1f} '+r"\\" for r in C)
+# 原始字符串完整保留 LaTeX 命令；所有 Python 注释都位于字符串之外，以免进入最终报告正文。
 tex=r"""\documentclass[UTF8,10.5pt,a4paper]{ctexart}
 \usepackage[margin=1.7cm,headheight=15pt]{geometry}
 \usepackage{amsmath,amssymb,booktabs,graphicx,xcolor,fancyhdr,hyperref,enumitem}
@@ -258,7 +274,9 @@ python scripts/03\_summarise\_plot.py NEW
 \end{enumerate}}
 \end{document}
 """
+# 这里只输出 UTF-8 源文件；实际 XeLaTeX 的两次编译由 report/build_documents.ps1 执行。
 (report/"report.tex").write_text(fill(tex,V),encoding="utf-8")
+# Beamer 文稿沿用提供的 CleanEasy 主题，引用已有科学图 PDF，保持与报告相同的数据来源。
 slides=r"""\documentclass[UTF8,aspectratio=169,10pt]{ctexbeamer}
 \usepackage{etoolbox,tikz,booktabs,amsmath,amssymb,graphicx}
 \makeatletter\def\input@path{{template/theme/}}\makeatother
@@ -365,6 +383,7 @@ t_{\rm once}=t_{\rm new}+t_{\rm OpenMP\ init}
 \end{document}
 """
 (report/"slides.tex").write_text(fill(slides,V),encoding="utf-8")
+# 可编辑 PPTX 的文字与图表键名另存 JSON；后续 05 脚本重建原生文本框和图表，不把页面截图粘进 PPT。
 native=[
 dict(title="漂移扩散方程数值实验",body=["反向随机游走与 Gaussian 宽核直接卷积","临时实验报告 · C++ OpenMP",date_zh]),
 dict(title="模型与比较任务",body=["uₜ = 0.2uₓ + 0.05uₓₓ，0 < x < 1，T = 0.5","u(0,t) = u(1,t) = 0，f(x) = exp(−2x) sin(πx)","解析解：exp[−2x − (0.05π² + 0.2)t] sin(πx)","内部 RMSE 与边界残差分开记录","R 层串行组织；C++ OpenMP 比较 1、2、4 线程"]),
@@ -378,6 +397,7 @@ dict(title="宽核下的网格求积误差",chart="grid",body=["多项式初值 
 dict(title="并行任务与计时范围",body=["R 串行组织；C++ OpenMP；求解含调用及 fork/join","新输入成本 = 输入准备 + 求解；无进程间通信","随机流分配在计时外；调用外准备字段为零","首次请求核验含 R 包装检查，可复用既有线程",f'本次单次观测：2 线程 {V["INIT2"]} ms，4 线程 {V["INIT4"]} ms',"t_once 加该观测，不是新 R 进程端到端冷启动"]),
 dict(title="并行收益取决于任务规模",chart="speedup",body=[f'本次四线程中位时间比：MC {pm["speedup"]:.2f}，卷积 {pc["speedup"]:.2f}',"个别加速比略高于线程数可受计时、频率及调度波动影响，不作超线性保证"]),
 dict(title="共同查询任务的精度与成本",chart="cost",body=[f'共同 8 点、2 线程：MC M=16384 与卷积 c=2',f'新输入成本比 {V["RATIO"]}；加首次请求观测后 {V["ONCERATIO"]}；限于本次问题'])]
+# 为每页写入相同来源和计时口径说明，Pandoc 会将它们保留为演讲者备注。
 for s in native:s["notes"]=f"模型与算法：numeric-experiment-plan.md。并行依据：idea.md 与课程 computer-skill/openmp-basics.md。实测数据：results/{run_id}/raw/ 与 summary/。Windows11，i7-11800H，R4.6.1，RcppArmadillo15.6.0-1。R 层串行组织实验；C++ OpenMP。原始记录保留随机状态和计时。{S['tests']} 项串行 E0 与另 {S['openmp_tests']} 项 OpenMP 集成核验分开记录。t_prepare_call=0，调用内准备及结果包装包含在 t_solve；seedman$get 随机流分配在计时外。t_openmp_init 是首次请求该线程数并核验的 R 包装调用单次观测，包含检查且可能复用 libgomp 既有线程；t_once 只加该观测，不是新 R 进程端到端冷启动，也不是纯 C++ 核心耗时。略超理想线的实测加速受计时、调度及频率变化影响，不是性能保证。"
 (report/"slide_content.json").write_text(json.dumps(native,ensure_ascii=False,indent=2),encoding="utf-8")
 print("Wrote report.tex, slides.tex and PowerPoint content.")

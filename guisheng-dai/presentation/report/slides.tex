@@ -1,0 +1,689 @@
+% !TEX program = xelatex
+% Main editable deck: guisheng-dai/presentation/report/slides.tex
+% Compile this source with build_slides.py; do not regenerate it from JSON.
+% Build from this directory (figures/, template/theme/ are relative paths here):
+%   latexmk slides.tex      or      xelatex slides.tex  (run twice)
+\documentclass[UTF8,aspectratio=169,10pt]{ctexbeamer}
+\usepackage{etoolbox,tikz,booktabs,amsmath,amssymb,graphicx}
+\usetikzlibrary{arrows.meta}
+\makeatletter\def\input@path{{template/theme/}}\makeatother
+\usetheme{CleanEasy}
+\title[漂移扩散方程的数值解]{漂移扩散方程的数值解}
+%\subtitle{反向随机游走与 Gaussian 宽核直接卷积\\临时实验报告}
+\author{}\institute{}\date[]{2026年11月17日}
+\hypersetup{pdfauthor={},pdftitle={漂移扩散方程数值实验演示}}
+\newcommand{\pic}[1]{\begin{center}\includegraphics[width=.92\linewidth,height=5.1cm,keepaspectratio]{figures/#1.pdf}\end{center}}
+
+% Code blocks: use XeLaTeX and [fragile] on frames containing inline code.
+\usepackage{listings,textcomp}
+% A local monospace font avoids the theme's legacy Typewriter font fallback.
+\newfontfamily\slidecodefont[
+  BoldFont=lmmonolt10-bold.otf,
+  ItalicFont=lmmono10-italic.otf,
+  BoldItalicFont=lmmonolt10-boldoblique.otf,
+  Ligatures={NoCommon,TeXOff}
+]{lmmono10-regular.otf}
+\lstdefinelanguage{RcppArmadillo}[11]{C++}{
+  morekeywords=[2]{Rcpp,arma,vec,mat,uvec,umat,sp_mat,subvec,dot,
+    linspace,zeros,ones,randu,randn,conv,as,wrap,export,depends}
+}
+\lstdefinelanguage{RcppEigen}[11]{C++}{
+  morekeywords=[2]{Rcpp,Eigen,MatrixXd,VectorXd,MatrixXi,VectorXi,
+    SparseMatrix,Triplet,SparseLU,SimplicialLDLT,Map,Ref,Matrix,Vector,
+    setFromTriplets,makeCompressed,analyzePattern,factorize,solve,as,wrap}
+}
+\lstdefinelanguage{PyTorch}[]{Python}{
+  morekeywords=[2]{torch,nn,optim,autograd,Tensor,tensor,Module,Linear,
+    Sequential,Tanh,ReLU,Parameter,Adam,SGD,grad,backward,zero_grad,
+    requires_grad,requires_grad_,no_grad,detach,device,cuda,manual_seed}
+}
+\lstdefinestyle{slidecode}{
+  basicstyle=\slidecodefont\fontsize{7}{9}\selectfont,
+  keywordstyle=\color{DarkBlue}\bfseries,
+  keywordstyle=[2]\color{MediumBlue}\bfseries,
+  commentstyle=\color{green!35!black},
+  stringstyle=\color{red!55!black},
+  identifierstyle=\color{MediumBlack},
+  backgroundcolor=\color{MutedBlack},
+  frame=single,
+  rulecolor=\color{MediumBlue!50},
+  framerule=0.4pt,
+  framesep=4pt,
+  numbers=left,
+  numberstyle=\tiny\color{MediumBlack!65},
+  numbersep=6pt,
+  xleftmargin=2em,
+  xrightmargin=0.5em,
+  framexleftmargin=1.5em,
+  aboveskip=0.6em,
+  belowskip=0.6em,
+  columns=fullflexible,
+  keepspaces=true,
+  tabsize=4,
+  breaklines=true,
+  breakatwhitespace=false,
+  breakautoindent=true,
+  breakindent=1em,
+  showstringspaces=false,
+  showspaces=false,
+  showtabs=false,
+  upquote=true,
+  extendedchars=false,
+  captionpos=t,
+  abovecaptionskip=0pt,
+  belowcaptionskip=4pt,
+  resetmargins=false
+}
+% Optional argument accepts listings options, e.g. title, numbers, firstnumber.
+% Language: R, RcppArmadillo, RcppEigen, Python, or PyTorch.
+\lstnewenvironment{codeblock}[2][]{
+  \lstset{style=slidecode,language=#2,#1}
+}{}
+% Include a source file (or selected lines) using the same code-block style.
+\newcommand{\codefile}[3][]{%
+  \lstinputlisting[style=slidecode,language=#2,#1]{#3}%
+}
+
+% Usage: code on the left, explanation on the right.
+% \begin{frame}[fragile]{代码与说明}
+% \begin{columns}[T,onlytextwidth]
+%   \begin{column}{0.56\textwidth}
+%     \begin{codeblock}[title={R 示例}]{R}
+% x <- seq(0, 1, length.out = 101)
+% u <- exp(-2 * x) * sin(pi * x)
+%     \end{codeblock}
+%   \end{column}
+%   \begin{column}{0.40\textwidth}
+%     \begin{itemize}
+%       \item 在这里解释代码。
+%     \end{itemize}
+%   \end{column}
+% \end{columns}
+% \end{frame}
+% Swap the two column environments to put the code on the right.
+% A codeblock outside columns uses the full available width.
+% File example (paths are relative to the report directory):
+% \codefile[firstline=1,lastline=15]{RcppArmadillo}{../../src/gaussian_convolution.cpp}
+% End code-block support.
+
+\begin{document}
+\begin{frame}[plain]\titlepage\end{frame}
+% Project background sources:
+% Black, F. and Scholes, M. (1973), JPE 81(3), 637--654.
+% https://doi.org/10.1086/260062
+% Jeong, D., Kim, J. and Wee, I.-S. (2009), CKMS 24(4), 617--628.
+% https://doi.org/10.4134/CKMS.2009.24.4.617
+\section{项目背景}
+\begin{frame}{Black--Scholes 模型的用途}
+Black--Scholes（B--S）模型用于计算\textbf{期权的理论价格}。
+\begin{itemize}
+\item 根据当前资产价格、执行价、到期时间、无风险利率和波动率，
+      计算期权在当前时刻的价值。
+\item 例如欧式看涨期权：持有人可在到期日 $T$ 按执行价 $K$ 购买资产，
+      到期收益为 $(S_T-K)_+$，其中 $S_T$ 是到期时的资产价格。
+\item 多资产版本可用于篮子期权定价，空间维数对应资产数量。
+\end{itemize}
+\begin{block}{漂移扩散方程 Drift Diffusion Equation}
+对资产价格取对数、用到期剩余时间计时，并消去贴现项后，
+B--S 定价方程具有漂移扩散结构。
+\begin{equation*}
+      \begin{cases}
+            u_t(\boldsymbol{x},t) = \boldsymbol{a}\cdot \nabla u(\boldsymbol{x},t) + D\Delta u(\boldsymbol{x},t)\\
+            u(\boldsymbol{x},0) = f_0(\boldsymbol{x})
+      \end{cases}
+\end{equation*}
+\end{block}
+\vfill
+{\scriptsize 来源：\href{https://doi.org/10.1086/260062}{Black \& Scholes (1973)}；
+\href{https://doi.org/10.4134/CKMS.2009.24.4.617}{Jeong, Kim \& Wee (2009), pp.\,617--618}。\par}
+\end{frame}
+% Variable meanings follow Kohn, PDE for Finance, Section 2, pp. 1--2,
+% and finmath-lib's MultiAssetBlackScholesModel documentation.
+\begin{frame}{漂移扩散方程中各变量的金融含义}
+\[
+u_\tau=\boldsymbol a\cdot\nabla u+D\Delta u,
+\qquad u(\boldsymbol x,0)=f_0(\boldsymbol x).
+\]
+\begin{description}
+\item[$\boldsymbol x$] 对数股价坐标，$x_i=\log S_i$；$S_i$ 为资产价格，$d$ 为资产数量。
+\item[$\tau$] 到期剩余时间，$\tau=T-t$；$T$ 为到期时刻，$t$ 为当前时刻。
+\item[$u$] 消去贴现项后的期权价值，$u=e^{r\tau}V$；$V$ 为期权当前理论价值。
+\item[$\boldsymbol a$] 风险中性下的对数价格漂移，$a_i=r-\sigma_{\rm BS}^2/2$；$r$ 为无风险利率。
+\item[$D$] 扩散系数，$D=\sigma_{\rm BS}^2/2$；$\sigma_{\rm BS}$ 为资产收益率波动率。
+\item[$f_0$] 到期收益函数，对应剩余期限为零时的初值。
+\end{description}
+$\nabla u$ 是一阶空间导数向量，$\Delta u=\sum_i u_{x_ix_i}$ 是二阶空间导数之和。
+\medskip\par
+{\small 上述系数假设无分红、利率与波动率恒定；多资产时还假设独立且波动率相同。
+本项目取 $d=1$，用 $t$ 表示此处的 $\tau$，扩散系数也记为 $\sigma^2=D$。}
+\vfill
+{\scriptsize 来源：\href{https://math.nyu.edu/~kohn/pde.finance/2015/section2.pdf}{Kohn, \emph{PDE for Finance}, \S2, pp.\,1--2}；
+\href{https://www.finmath.net/finmath-lib/apidocs/net.finmath.lib/net/finmath/montecarlo/assetderivativevaluation/models/MultiAssetBlackScholesModel.html}{finmath-lib, \emph{MultiAssetBlackScholesModel}}。\par}
+\end{frame}
+\section{求解算法}
+
+\begin{frame}{四种数值解算法}
+      \begin{exampleblock}{解析解}
+            \[
+            \begin{aligned}
+                  u_{\star}(\boldsymbol{x},t)
+                  &=\int_{\mathbb R^d}f_0(\boldsymbol{y})\,
+                    G_t(\boldsymbol{y}-\boldsymbol{x}-\boldsymbol{a}t)\,d\boldsymbol{y}\\
+                  &=(G_t \ast f_0)(\boldsymbol{x} + \boldsymbol{a}t)
+            \end{aligned}
+            \]
+            {\small 其中 $G_t(\boldsymbol{z})=(4\pi Dt)^{-d/2}\exp\bigl(-\|\boldsymbol{z}\|_2^2/(4Dt)\bigr)$
+            是 Gaussian 核，$D=\sigma^2$。}
+      \end{exampleblock}
+      \begin{enumerate}
+            \item 反向随机游走（Monte Carlo 采样），\textbf{RcppArmadillo} + \textbf{OpenMP} 并行
+            \item Gaussian 宽核直接卷积（类似图像卷积），\textbf{RcppArmadillo} + \textbf{OpenMP} 并行
+            \item 显式差分格式，\textbf{RcppEigen} 稀疏矩阵存储与运算
+            \item 物理信息神经网络（PINN），\textbf{PyTorch}训练
+      \end{enumerate}
+      
+\end{frame}
+\begin{frame}{数值实验}
+把空间简化成一维，使用以下方程进行数值实验
+\begin{align*}
+& u_t = 0.2u_x + 0.05u_{xx}, \quad 0 < x < 1, \quad T = 0.5, \\
+& u(0,t)=u(1,t)=0, \qquad f_0(x)=e^{-2x}\sin(\pi x), \\
+& u_{\star}(x,t)=e^{-2x-(0.05\pi^2+0.2)t}\sin(\pi x).
+\end{align*}
+
+\end{frame}
+
+\section{反向随机游走}
+
+% Based on idea.md, Section 1; retain the stay-put event p_0 and absorption.
+\begin{frame}{三点差分格式与一步反向游走}
+取 $x_i=ih$、$t_n=n\tau$、$u_i^n\approx u(x_i,t_n)$，时间前向、空间中心差分：
+\begin{columns}[c,onlytextwidth]
+\begin{column}{0.61\textwidth}
+\[
+\frac{u_i^{n+1}-u_i^n}{\tau}
+=a\frac{u_{i+1}^n-u_{i-1}^n}{2h}
+ +D\frac{u_{i+1}^n-2u_i^n+u_{i-1}^n}{h^2}.
+\]
+\[
+\boxed{u_i^{n+1}=p_-u_{i-1}^n+p_0u_i^n+p_+u_{i+1}^n}
+\]
+\[
+\begin{aligned}
+p_\pm&=\frac{D\tau}{h^2}\pm\frac{a\tau}{2h},\\
+p_0&=1-\frac{2D\tau}{h^2}.
+\end{aligned}
+\]
+当 $\dfrac{D\tau}{h^2}\le\dfrac12$、$|a|h\le2D$ 时，
+$p_-,p_0,p_+\ge0$ 且和为 $1$，可作为转移概率。
+\end{column}
+\begin{column}{0.36\textwidth}
+\centering
+{\scriptsize\textbf{差分推进：第 $n$ 层计算第 $n+1$ 层}}\par
+\begin{tikzpicture}[x=.70cm,y=.52cm,>=Stealth,font=\scriptsize]
+  % Axes and the regular space-time mesh.
+  \draw[->,gray!80] (0,0)--(5.6,0) node[right,text=black] {$x$};
+  \draw[->,gray!80] (0,0)--(0,3.75) node[above,text=black] {$t$};
+  \foreach \xx in {1,2,3,4,5} {
+    \draw[gray!25] (\xx,.65)--(\xx,3.35);
+    \foreach \yy in {1,2,3} {\fill[gray!50] (\xx,\yy) circle (1pt);}
+  }
+  \foreach \yy in {1,2,3} {\draw[gray!25] (.7,\yy)--(5.3,\yy);}
+  \foreach \xx/\lab in {2/{i-1},3/{i},4/{i+1}} {
+    \draw[gray!80] (\xx,.06)--(\xx,-.06);
+    \node[below] at (\xx,-.06) {$x_{\lab}$};
+  }
+  \foreach \yy/\lab in {1/{n-1},2/{n},3/{n+1}} {
+    \draw[gray!80] (-.06,\yy)--(.06,\yy);
+    \node[left] at (-.06,\yy) {$t_{\lab}$};
+  }
+  % FTCS uses three values on row n to update the centre on row n+1.
+  \foreach \xx in {2,3,4} {
+    \draw[->,MediumBlue,thick,shorten >=2pt,shorten <=2pt] (\xx,2)--(3,3);
+    \fill[MediumBlue] (\xx,2) circle (1.8pt);
+  }
+  \fill[DarkBlue] (3,3) circle (2pt);
+  \node[below right,text=DarkBlue,fill=white,inner sep=1pt]
+    at (3.08,1.94) {$u_i^n$};
+  \node[above right,text=DarkBlue,fill=white,inner sep=1pt]
+    at (3.08,3) {$u_i^{n+1}$};
+\end{tikzpicture}
+\par\smallskip
+{\scriptsize\textbf{随机回溯：第 $n+1$ 层返回第 $n$ 层}}\par
+\begin{tikzpicture}[x=.85cm,y=.85cm,>=Stealth,font=\scriptsize]
+  \draw[gray!35,dashed] (-2,1.5)--(2,1.5);
+  \draw[gray!35,dashed] (-2,0)--(2,0);
+  \node[above,text=DarkBlue] at (0,1.55) {$u_i^{n+1}$};
+  \fill[DarkBlue] (0,1.5) circle (2.2pt);
+  \draw[->,thick,MediumBlue,shorten >=3pt,shorten <=3pt]
+    (0,1.5)--(-1.6,0) node[midway,above left] {$p_-$};
+  \draw[->,thick,MediumBlue,shorten >=3pt,shorten <=3pt]
+    (0,1.5)--(0,0) node[midway,right] {$p_0$};
+  \draw[->,thick,MediumBlue,shorten >=3pt,shorten <=3pt]
+    (0,1.5)--(1.6,0) node[midway,above right] {$p_+$};
+  \foreach \xx/\lab in {-1.6/{i-1},0/{i},1.6/{i+1}} {
+    \fill[MediumBlue] (\xx,0) circle (2pt);
+    \node[below] at (\xx,-.03) {$u_{\lab}^n$};
+  }
+  \node[right,font=\scriptsize] at (2,1.5) {$t_{n+1}$};
+  \node[right,font=\scriptsize] at (2,0) {$t_n$};
+  \node[font=\scriptsize,align=center] at (0,-.76)
+    {时间回退 $\tau$，空间移动 $-h$、$0$ 或 $+h$};
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{反向随机游走的期望表示}
+由一步递推式
+\[
+u_i^{n+1}=p_-u_{i-1}^n+p_0u_i^n+p_+u_{i+1}^n,
+\]
+逐层回溯至 $t=0$，并代入初值 $u_i^0=f_0(x_i)$，可得
+\[
+\boxed{u_i^n=\mathbb E\!\left[f_0(X_n)\mid X_0=x_i\right]}.
+\]
+其中，$\{X_k,k\geq 0\}$是从$x_i$开始的反向随机游走过程。$X_k$ 表示回溯 $k$ 步后的位置。在首次触边前，
+\[
+X_k=x_i+h\sum_{j=1}^{k}\xi_j,
+\qquad \xi_1,\xi_2,\ldots\ \text{独立同分布},
+\]
+\[
+\mathbb P(\xi_j=-1)=p_-,\qquad
+\mathbb P(\xi_j=0)=p_0,\qquad
+\mathbb P(\xi_j=+1)=p_+.
+\]
+\begin{block}{零边界对应吸收}
+路径触及 $0$ 或 $1$ 后停留在该边界。
+由于 $f_0(0)=f_0(1)=0$，触边路径的收益为零。
+\end{block}
+\end{frame}
+
+\begin{frame}{Monte Carlo：用路径平均估计期望}
+独立模拟 $M$ 条反向随机游走路径，记第 $m$ 条路径的终点为 $X_n^{(m)}$。
+\medskip
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.53\textwidth}
+\textbf{以终点初值的样本均值估计 $u_i^n$}
+\[
+\begin{aligned}
+Y_m&=f_0(X_n^{(m)}),\\
+\widehat u_i^n&=\textstyle\frac1M\sum_{m=1}^{M}Y_m.
+\end{aligned}
+\]
+\begin{itemize}
+\item 从 $X_0=x_i$ 按三个概率回溯至初始时刻。
+\item 触边计 $0$，仍对\textbf{全部 $M$ 条路径}取平均。
+\end{itemize}
+{\small 期望严格等于差分解，有限样本平均另有抽样误差。}
+\end{column}
+\begin{column}{0.44\textwidth}
+\centering
+% Static placeholder: compilation does not require animation packages or files.
+\fbox{\parbox[c][3.8cm][c]{0.94\linewidth}{\centering
+  \color{MediumBlack}反向随机游走动画\\[0.8em]
+  \small 预留展示区域}}
+\par\smallskip
+{\scriptsize 回溯至 $t=0$，触边立即吸收。}
+\end{column}
+\end{columns}
+\end{frame}
+
+% Existing serial E0 experiment, not a new run.
+% Source: scripts/01_tests.R; results/tests/e0_tests.csv.
+\begin{frame}{反向随机游走的小规模正确性测试}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.48\textwidth}
+\begin{block}{测试设置与参照}
+\begin{itemize}
+\item $N=n=8$，查询 $x_1=1/8$，$T=0.5$。
+\item 串行独立重复 $10$ 批，每批 $M=4096$ 条路径。
+\item 以同一差分格式的离散期望为参照，检验抽样误差。
+\end{itemize}
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{抽样误差检验}
+\[
+z=\frac{|\overline{\widehat u}-u_{\rm disc}|}
+        {\sqrt{\operatorname{Var}(Y)/(10M)}}
+\]
+\[
+\boxed{z=0.0502879<4\quad\text{通过}}
+\]
+{\footnotesize 分母为 $10$ 批平均估计的理论标准误。}
+\end{block}
+\end{column}
+\end{columns}
+\medskip
+\begin{exampleblock}{R 与 Rcpp 的实现一致性也通过}
+同随机流、$256$ 条路径下，返回统计量的最大差异小于 $10^{-12}$。
+\end{exampleblock}
+\vfill
+{\scriptsize 测试脚本：\texttt{scripts/01\_tests.R}；
+已记录结果：\texttt{results/tests/e0\_tests.csv}。\par}
+\end{frame}
+
+% E1 and E2 reuse the recorded 30-batch results in report.tex, Section 3.
+\begin{frame}{模拟游走次数对精度的影响}
+\small
+$(N,n)=(8,8),(16,32)$，查询 $x=1/8$，$T=0.5$；\\
+$M=256,1024,4096,16384$，每个配置独立重复 $30$ 批。
+\begin{center}
+\includegraphics[width=.98\linewidth,height=4.0cm,keepaspectratio]{figures/mc_error.pdf}
+\end{center}
+\begin{itemize}
+\item \textbf{增加 $M$ 降低抽样误差：}相对差分格式的 RMSE 总体按 $M^{-1/2}$ 下降，有限批次的观测会有波动。
+\item \textbf{固定网格仍有误差限制：}$(8,8)$ 的差分格式误差为 $2.39\times10^{-3}$；
+      $M=16384$ 时总 RMSE 为 $2.67\times10^{-3}$，已接近这一水平。
+\end{itemize}
+\end{frame}
+
+\begin{frame}{网格大小对精度的影响}
+\small
+固定 $M=4096$，查询 $x=1/8$，每个配置独立重复 $30$ 批；\\
+$(N,n)=(8,8),(16,32),(32,128)$，$h=1/N$，保持 $D\tau/h^2=0.2$。
+\begin{center}
+\includegraphics[width=.98\linewidth,height=3.8cm,keepaspectratio]{figures/mc_grid.pdf}
+\end{center}
+\begin{itemize}
+\item \textbf{$h$ 越小，差分格式误差越小：}由 $2.39\times10^{-3}$ 降至
+      $5.75\times10^{-4}$、$1.42\times10^{-4}$。
+\item \textbf{随机误差占优时，观测 RMSE 不一定随 $h$ 减小而减小：}
+      固定 $M$ 下的抽样波动可掩盖网格改善；总 RMSE 依次为
+      $3.77,\,2.71,\,3.22\; (\times10^{-3})$。
+\end{itemize}
+\end{frame}
+
+% New measured cost experiments: results/walk-cost-20261118/.
+% Reproduce with scripts/06_benchmark_walk_cost.R and scripts/07_plot_walk_cost.py.
+\begin{frame}{固定线程数：时间与空间网格的开销}
+\small
+固定 $p=2$、$M=16384$，仅查询 $x=1/2$，$T=0.5$；分别改变 $n$ 与 $N$。\\
+计完整求解调用，排除编译、输入准备和预热；$9$ 轮取中位数，误差棒为四分位区间。
+\begin{center}
+\includegraphics[width=.98\linewidth,height=3.8cm,keepaspectratio]{figures/walk_cost_grid.pdf}
+\end{center}
+\begin{itemize}
+\item \textbf{固定 $N$：}计算量随时间步数 $n$ 为 $O(n)$。
+\item \textbf{固定 $n$：}游走主体对 $N$ 为 $O(1)$，另有 $O(N)$ 的输入校验开销。
+\end{itemize}
+{\footnotesize 时间步数 $n$ 需与空间网格匹配、满足差分格式的稳定性要求，不能随意选取。}
+\end{frame}
+
+\begin{frame}{固定求解任务：串行与并行加速}
+\small
+$(N,n)=(64,512)$，$M=65536$，单点 $x=1/2$；i7-11800H，$8$ 个物理核。\\
+串行版关闭 OpenMP；各版本共用算法、随机数流及 R 包装，输出与实际步数一致。
+\begin{center}
+\includegraphics[width=.98\linewidth,height=3.8cm,keepaspectratio]{figures/walk_cost_parallel.pdf}
+\end{center}
+\begin{itemize}
+\item $S_p=T_{\rm serial}/T_p$：串行 $311.6\,\mathrm{ms}$；
+      $2/4/8$ 线程分别为 $154.1/80.9/50.4\,\mathrm{ms}$，加速 $2.02/3.85/6.18$ 倍。
+\item $8$ 线程效率约 $77\%$；增加线程仍有收益，但未达到理想线性加速。
+      各配置预热后重复 $9$ 轮，以耗时中位数计算加速比。
+\end{itemize}
+\end{frame}
+
+\begin{frame}{误差、适用范围与计算瓶颈}
+\small
+\[
+\mathbb E\bigl[(\widehat u-u)^2\bigr]
+=\underbrace{(u_{\rm disc}-u)^2}_{\text{差分格式误差平方}}
++\underbrace{\operatorname{Var}(Y)/M}_{\text{抽样方差}}.
+\]
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.48\textwidth}
+\textbf{精度与计算代价}
+\begin{itemize}
+\item 固定网格下，随机标准误减半需要约 $4$ 倍路径数；增加 $M$ 不能消除差分格式误差。
+\item 增加时间步数会延长游走；每增加一个查询点，都需要重新模拟一批路径。
+\item 因而更适合\textbf{少量查询点、适中精度、可并行的大批路径}。
+      一维全网格高精度求解时，逐点重复抽样的成本较高。
+\end{itemize}
+\end{column}
+\begin{column}{0.48\textwidth}
+\textbf{本实现的主要限制}
+\begin{itemize}
+\item 每条路径逐步生成随机数、判断移动与吸收；路径内部的步骤有先后依赖。
+\item 路径间可并行，但实际长度不同；本实现每查询点固定 $16$ 个任务块。
+\item R 打包与归约、线程调度仍有开销；增加线程不能降低 $M,n$ 所决定的总工作量。
+\end{itemize}
+\end{column}
+\end{columns}
+\medskip
+{\footnotesize 上述效率来自本机单点任务；查询位置影响吸收概率与实际步数，不能把该加速比直接推广到所有任务。}
+\end{frame}
+
+\section{Gaussian 核直接卷积}
+% Random-walk interpretation from idea.md; retain p_0 in the increment variance.
+% The free-space Gaussian formula below is distinguished from the bounded problem.
+\begin{frame}{随机游走与 Gaussian 卷积}
+\small
+先在全空间 $x\in\mathbb R$ 考虑 $u_t=a u_x+D u_{xx}$，初值为 $f_0$。
+\medskip
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.48\textwidth}
+\textbf{1. 反向游走累积许多独立小步}
+
+从 $(x,t)$ 回溯 $n$ 步，$n\tau=t$；每步位移 $\Delta X_k\in\{-h,0,h\}$，满足
+\[
+\begin{aligned}
+\mathbb E[\Delta X_k]&=a\tau,\\
+\operatorname{Var}(\Delta X_k)&=2D\tau-a^2\tau^2.
+\end{aligned}
+\]
+\end{column}
+\begin{column}{0.48\textwidth}
+\textbf{2. 终点分布趋于 Gaussian 分布}
+
+保持转移概率非负并细化网格，由中心极限定理，$h,\tau\to0$ 时
+\[
+X_n=x+\sum_{k=1}^{n}\Delta X_k
+\ \xrightarrow{d}\ X_t\sim\mathcal N(x+at,\,2Dt).
+\]
+漂移决定终点均值，扩散决定分布宽度。
+\end{column}
+\end{columns}
+\begin{block}{3. 对终点初值取期望，就是按 Gaussian 密度加权}
+\[
+\begin{aligned}
+u(x,t)&=\mathbb E[f_0(X_t)]
+=\int_{\mathbb R}f_0(y)\,G_t(y-x-at)\,dy\\
+&=(G_t*f_0)(x+at),\qquad
+G_t(z)=\frac{1}{\sqrt{4\pi Dt}}e^{-z^2/(4Dt)}.
+\end{aligned}
+\]
+\end{block}
+\textbf{随机游走}用样本平均估计期望；\textbf{直接卷积}按终点密度加权求和。
+\smallskip\par
+{\footnotesize 本项目含区间零边界：游走触边吸收；卷积需先消去漂移，
+再对变换后的初值作奇延拓，见下一页。}
+\end{frame}
+
+% Algorithm excerpts: src/gaussian_convolution.cpp, lines 27--44 and 78--94.
+% The diagram is an editable TikZ illustration of the two-sided odd extension.
+\begin{frame}[fragile]{使用奇延拓处理零边界}
+\small
+先消去漂移，将方程化为热方程，便于用\textbf{奇延拓和对称热核}处理零边界：
+\[
+v=e^{\beta x+\gamma t}u,\qquad
+\beta=\frac{a}{2D},\quad\gamma=\frac{a^2}{4D},\qquad v_t=Dv_{xx}.
+\]
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.46\textwidth}
+\textbf{对变换后的初值 $g(x)=e^{\beta x}f_0(x)$ 延拓}
+\begin{itemize}
+\item 绕 $0$、$1$ 镜像并变号，再按周期 $2$ 重复。
+\item 两端的正负贡献被对称核成对抵消，使边界值保持为零。
+\end{itemize}
+{\centering
+\begin{tikzpicture}[x=1.55cm,y=.72cm,>=Stealth,font=\scriptsize]
+  \fill[MediumBlue!7] (0,-1.18) rectangle (1,1.32);
+  \draw[->,gray!80] (-1.13,0)--(2.18,0) node[right] {$x$};
+  \draw[->,gray!80] (0,-1.22)--(0,1.55) node[above] {$\widetilde g$};
+  \draw[dashed,gray!55] (1,-1.18)--(1,1.32);
+  \draw[very thick,MediumBlue,domain=0:1,samples=45,smooth]
+    plot (\x,{4*\x*(1-\x)*(.75+.5*\x)});
+  \draw[very thick,orange!80!black,domain=-1:0,samples=45,smooth]
+    plot (\x,{4*\x*(1+\x)*(.75-.5*\x)});
+  \draw[very thick,orange!80!black,domain=1:2,samples=45,smooth]
+    plot (\x,{-4*(2-\x)*(\x-1)*(.75+.5*(2-\x))});
+  \foreach \xx in {-1,0,1,2} {
+    \fill[DarkBlue] (\xx,0) circle (1.5pt);
+    \node[below right,inner sep=1.5pt] at (\xx,0) {$\xx$};
+  }
+  \node[text=MediumBlue] at (.53,1.34) {$g(x)$};
+  \node[text=orange!80!black] at (-.55,-1.42) {$-g(-x)$};
+  \node[text=orange!80!black] at (1.55,-1.42) {$-g(2-x)$};
+\end{tikzpicture}
+\par}
+{\footnotesize 周期延拓仅用于计算，物理边界仍为零。}
+\end{column}
+\begin{column}{0.51\textwidth}
+\textbf{边界填充}
+% Same operations as the source; comments omitted and declarations split for display.
+\begin{codeblock}[numbers=none]{RcppArmadillo}
+arma::vec g = arma::exp(beta*x) % f;
+g[0] = g[N] = 0;
+arma::vec padded(N+2*K+1);
+for (int t=0; t<N+2*K+1; ++t) {
+  int r = ((t-K)%(2*N)+2*N)%(2*N);
+  padded[t] = r<=N ? g[r] : -g[2*N-r];
+}
+\end{codeblock}
+\texttt{padded[t]} 对应延拓节点 $t-K$。\\[.5em]
+先取模映射到一个周期，再反射变号；核窗口多次越过边界时也适用。
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{卷积计算与核大小的选择}
+\small
+查询点$(x_j,T)$，直接通过卷积计算
+\[
+\widehat{u}(x_j,T)=e^{-\beta x_j-\gamma T}\sum_{\ell=-K}^{K}w_\ell\widetilde g(x_j-\ell h),
+\qquad
+w_\ell=\frac{h}{\sqrt{4\pi DT}}e^{-(\ell h)^2/(4DT)}.
+\]
+\begin{block}{按 Guassian 核的标准差选择卷积核大小}
+\begin{itemize}
+\item \textbf{标注差}Guassian核$G_T(z)=(4\pi DT)^{-1/2}\exp(-z^2/4DT)$的标准差$s_T=\sqrt{2DT}$
+\item \textbf{卷积核大小：}保证卷积核左右覆盖$c$倍标准差；半径$K=\lceil\frac{cs_T}{h}\rceil$，大小$W=2K+1$
+\item \textbf{精度与成本：}增大 $c$ 可减小遗漏尾部的影响，但每个输出点需做更多乘加。
+      按目标精度选 $c$，并与更宽的核比较确认。
+\end{itemize}
+\end{block}
+
+\medskip
+{\footnotesize 例：$D=0.05,\ T=0.5,\ N=512,\ c=3$ 时，$K=344,\ W=689$。
+固定 $c$ 细化网格时，$W$ 也需增大，以保持相近的物理覆盖范围。}
+\end{frame}
+
+\begin{frame}[fragile]{使用OpenMP并行求解多个查询点}
+\small
+提前准备完整奇延拓、核权重和恢复因子；每个查询点独立计算卷积。
+\medskip
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.62\textwidth}
+% Source: gaussian_convolution.cpp:78--94; only comments and spacing changed.
+\begin{codeblock}[numbers=none]{RcppArmadillo}
+Rcpp::NumericVector out(nq);
+const int* query = query_j.begin();
+double* values = out.begin();
+int used = 1;
+#pragma omp parallel num_threads(threads) \
+    if(threads>1) shared(used)
+{
+  #pragma omp single
+  used = omp_get_num_threads();
+  #pragma omp for schedule(static)
+  for (int q=0; q<nq; ++q) {
+    const int j = query[q];
+    values[q] = scale[j] * arma::dot(
+        padded.subvec(j,j+W-1), weights);
+  }
+}
+\end{codeblock}
+\end{column}
+\begin{column}{0.35\textwidth}
+\begin{itemize}
+\item \texttt{parallel} 建立线程组，\texttt{for} 静态分配输出点。
+\item 所有线程共享只读输入，各自写 \texttt{values[q]}，无需合并局部和。
+\item \texttt{subvec} 取完整窗口，\texttt{dot} 求内积，再乘恢复因子。
+\item \texttt{single} 记录实际线程数；R 对象在并行区外分配。
+\end{itemize}
+\end{column}
+\end{columns}
+\medskip
+{\footnotesize 编译启用 Rcpp 的 OpenMP 插件；关闭 Armadillo 内部并行、将 BLAS 设为单线程，避免嵌套并行。}
+\end{frame}
+% E3 accuracy: results/openmp-final-20261117/summary/kernel.csv.
+% New timing data: results/gaussian-cost-20261118/; no E4 grid experiment here.
+% Reproduce with scripts/08_benchmark_gaussian_cost.R and 09_plot_gaussian_cost.py.
+\begin{frame}{卷积核大小：精度与计算开销}
+\small
+固定主问题 $a=0.2,\ D=0.05,\ T=0.5$，$f_0(x)=e^{-2x}\sin(\pi x)$。\\
+$N=512$、$2$ 线程，求解整条曲线的 $513$ 个节点；RMSE 仅统计内部节点。
+\begin{center}
+\includegraphics[width=.98\linewidth,height=3.8cm,keepaspectratio]{figures/gaussian_kernel_tradeoff.pdf}
+\end{center}
+\begin{itemize}
+\item \textbf{加宽核降低截断影响：}$c=1\to6$，$W=231\to1375$，
+      RMSE 由 $3.84\times10^{-2}$ 降至 $1.90\times10^{-10}$。
+\item \textbf{精度提升需要更多计算：}$c=1\to6$，求解耗时由 $0.119$ 增至 $0.439\,\mathrm{ms}$；
+      固定网格时，卷积乘加量随 $c$ 近似线性增长。
+\end{itemize}
+{\footnotesize 精度复用报告 E3；耗时为本次预热后 $9$ 轮批量计时的中位数，误差棒为四分位区间。}
+\end{frame}
+
+\begin{frame}{整条曲线求解的并行加速}
+\small
+同一主问题，固定 $c=6$；大任务 $N=8192$，一次求解全部 $8193$ 个节点。\\
+比较 $1/2/4/8$ 线程，$S_p=T_1/T_p$；以同一程序单线程耗时为基线。
+\begin{center}
+\includegraphics[width=.98\linewidth,height=3.8cm,keepaspectratio]{figures/gaussian_curve_parallel.pdf}
+\end{center}
+\begin{itemize}
+\item \textbf{大任务并行收益明显：}$2/4/8$ 线程加速 $1.90/3.74/7.01$ 倍；
+      若包含输入准备，$8$ 线程的完整调用加速为 $6.35$ 倍。
+\item \textbf{小任务并行收益较低：}$N=512$ 时，$8$ 线程加速 $2.95$ 倍；
+      调用、校验与调度的开销占比更大。
+\end{itemize}
+{\footnotesize i7-11800H，$8$ 个物理核；BLAS 单线程；预热后 $9$ 轮取中位数。
+图中求解耗时不含输入准备。}
+\end{frame}
+
+\begin{frame}{直接卷积的适用范围与计算瓶颈}
+\small
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.48\textwidth}
+\textbf{精度与适用范围}
+\begin{itemize}
+\item \textbf{适合固定时刻的整条曲线：}常系数一维问题，边界可用奇延拓处理；
+      直接计算终态，无需逐时间步推进。
+\item \textbf{没有随机抽样误差：}主要控制核截断与网格求积误差；
+      增大 $c$ 控制截断影响，不能替代网格细化。
+\item 本例 $c=6$ 已达到约 $10^{-10}$ 的 RMSE；
+      $c=8$ 接近舍入精度，是本次光滑正弦初值的结果。
+\end{itemize}
+\end{column}
+\begin{column}{0.48\textwidth}
+\textbf{计算量与瓶颈}
+\begin{itemize}
+\item \textbf{每点都要计算一个宽窗口：}单点内积 $O(W)$，整条曲线 $O(NW)$；
+      固定 $D,T$ 时，约为 $O(cN^2)$。
+\item 细化网格不仅增加输出点，也增加核的格点数；
+      更大的 $c$ 或 $DT$ 同样会扩大窗口。
+\item 点积的乘加与重复读取数组构成主要工作；输入准备、校验和线程调度也有开销。
+      并行可以缩短耗时，但不改变总计算量的增长阶。
+\end{itemize}
+\end{column}
+\end{columns}
+\medskip
+\begin{block}{参数选择}
+结合目标精度选择网格与核宽，再比较线程数；少量查询点或短窗口下，应同时比较单线程耗时。
+\end{block}
+\end{frame}
+\end{document}

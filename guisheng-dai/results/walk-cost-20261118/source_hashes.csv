@@ -1,0 +1,11 @@
+file,md5
+06_benchmark_walk_cost.R,e5a6e2c925238eaf248917bdf2311210
+07_plot_walk_cost.py,a103416318976918ee06590cb159d10c
+bootstrap.R,b2afceba7b5dc65ba78a5305902e6838
+metrics.R,8178607cd26e0c880016590e994560c1
+problem.R,7bd930f63ca4ce963588dd4b6bd5a253
+random_walk.cpp,7a4c1c7dfa264ba034c3b076324cc607
+random_walk.R,644b72ebc0ac9bea6b7462ca29a929f6
+random_walk_serial.cpp,ccce18c36680cb3963aa71f5d894d3ce
+rng.R,e2a858cd051274d8c35309b34c490351
+slides-delivered.tex,347ae66cd2e45637bbd570bad04a2167

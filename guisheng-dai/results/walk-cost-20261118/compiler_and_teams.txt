@@ -1,0 +1,87 @@
+$serial
+$serial$compiled
+[1] FALSE
+
+$serial$`_OPENMP`
+[1] 0
+
+$serial$max_threads
+[1] 1
+
+$serial$actual_threads
+[1] 1
+
+$serial$compiler
+[1] "14.3.0"
+
+
+$openmp
+$openmp[[1]]
+$openmp[[1]]$compiled
+[1] TRUE
+
+$openmp[[1]]$`_OPENMP`
+[1] 201511
+
+$openmp[[1]]$max_threads
+[1] 16
+
+$openmp[[1]]$actual_threads
+[1] 1
+
+$openmp[[1]]$compiler
+[1] "14.3.0"
+
+
+$openmp[[2]]
+$openmp[[2]]$compiled
+[1] TRUE
+
+$openmp[[2]]$`_OPENMP`
+[1] 201511
+
+$openmp[[2]]$max_threads
+[1] 16
+
+$openmp[[2]]$actual_threads
+[1] 2
+
+$openmp[[2]]$compiler
+[1] "14.3.0"
+
+
+$openmp[[3]]
+$openmp[[3]]$compiled
+[1] TRUE
+
+$openmp[[3]]$`_OPENMP`
+[1] 201511
+
+$openmp[[3]]$max_threads
+[1] 16
+
+$openmp[[3]]$actual_threads
+[1] 4
+
+$openmp[[3]]$compiler
+[1] "14.3.0"
+
+
+$openmp[[4]]
+$openmp[[4]]$compiled
+[1] TRUE
+
+$openmp[[4]]$`_OPENMP`
+[1] 201511
+
+$openmp[[4]]$max_threads
+[1] 16
+
+$openmp[[4]]$actual_threads
+[1] 8
+
+$openmp[[4]]$compiler
+[1] "14.3.0"
+
+
+

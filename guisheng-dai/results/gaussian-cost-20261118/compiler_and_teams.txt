@@ -1,0 +1,68 @@
+[[1]]
+[[1]]$compiled
+[1] TRUE
+
+[[1]]$`_OPENMP`
+[1] 201511
+
+[[1]]$max_threads
+[1] 16
+
+[[1]]$actual_threads
+[1] 1
+
+[[1]]$compiler
+[1] "14.3.0"
+
+
+[[2]]
+[[2]]$compiled
+[1] TRUE
+
+[[2]]$`_OPENMP`
+[1] 201511
+
+[[2]]$max_threads
+[1] 16
+
+[[2]]$actual_threads
+[1] 2
+
+[[2]]$compiler
+[1] "14.3.0"
+
+
+[[3]]
+[[3]]$compiled
+[1] TRUE
+
+[[3]]$`_OPENMP`
+[1] 201511
+
+[[3]]$max_threads
+[1] 16
+
+[[3]]$actual_threads
+[1] 4
+
+[[3]]$compiler
+[1] "14.3.0"
+
+
+[[4]]
+[[4]]$compiled
+[1] TRUE
+
+[[4]]$`_OPENMP`
+[1] 201511
+
+[[4]]$max_threads
+[1] 16
+
+[[4]]$actual_threads
+[1] 8
+
+[[4]]$compiler
+[1] "14.3.0"
+
+

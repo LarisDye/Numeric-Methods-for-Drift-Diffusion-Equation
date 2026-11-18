@@ -2,7 +2,15 @@
 
 本目录由 **Guisheng Dai** 负责，对应共同 [idea.md](../idea.md) 中的前两种解法。按 [实验方案](numeric-experiment-plan.md) 实现反向吸收随机游走和 RcppArmadillo Gaussian 宽核直接卷积；有限差分与 PINN 由 repository 合作者负责，见 [根目录分工](../README.md)。R 参考算法与实验组织串行执行；C++ 核心使用 OpenMP 多线程。小规模验证串行，正式精度实验使用两个 OpenMP 线程，性能比较一、二、四线程。若以后为 R 参考算法增加并行，应使用 R 多进程，避免嵌套并行。现有 PDF 和演示稿仍是临时报告，不添加姓名、学号或正式提交信息。
 
-交付文件位于 `report/`：
+详细的文件职责、函数参数、公式与数组对应、随机流、OpenMP、实验计时和运行示例见 [代码说明 CODE_GUIDE.md](CODE_GUIDE.md)。
+
+当前演示稿位于 [`presentation/report/`](presentation/report/README.md)：
+
+- `slides.tex` / `slides.pdf`：人工维护的 25 页演示稿，包含补充的计算开销实验。
+- `slides.pptx`：当前 PDF 的高清版式副本，第 11 页内嵌反向随机游走动画；正文修改仍以 TeX 为准。
+- 本次补充实验、原始记录与复现入口见 [`results/README.md`](results/README.md)。
+
+早期交付文件保留在 `report/`，不与当前演示稿同步：
 
 - `report.pdf`：7 页中文实测报告。
 - `slides.pdf`：12 页 CleanEasy Beamer 模板演示稿，固定版式。
@@ -79,7 +87,7 @@ python scripts/05_build_pptx.py
 
 `t_solve` 是整次求解器调用耗时，包含 R 任务打包、R/C++ 调用、OpenMP fork/join、实际计算、包装和固定块序归约，不称为纯 C++ 核耗时。`t_input` 是初值或填充/权重准备；没有 IPC，`t_prepare_call=0`。`t_reused_new_input` 为准备加求解，使用已初始化运行时。`t_openmp_init` 是首次请求该线程数并核验的包装调用的一次观测，可能复用已有运行时线程；`t_once` 再加此观测，并非全新 R 进程的端到端冷启动。首次编译、随机流分配、真值计算、核验、绘图与 CSV 写出不属于求解计时。E4 的单次时间不用于性能结论。
 
-`results/openmp-final-20261117/source_hashes.csv` 标识实验后保存的源码快照，路径相对于本目录；后续仅整理目录及文档，数值核心保持原样。`openmp_info.rds` 与 `raw/initialization.csv` 保存编译和实际线程信息。`environment.txt` 中 Git HEAD 是实验运行时的基础提交，包含本目录的提交以仓库 Git 历史为准。
+`results/openmp-final-20261117/source_hashes.csv` 标识实验后归档的源码快照，路径相对于本目录。后续整理目录并添加了中文代码注释，算法逻辑保持不变，但注释会改变文件的字节哈希；原始清单作为历史记录保留，不改写成当前注释版的哈希。`openmp_info.rds` 与 `raw/initialization.csv` 保存编译和实际线程信息。`environment.txt` 中 Git HEAD 是实验运行时的基础提交，包含本目录的提交以仓库 Git 历史为准。
 
 ## 复用与 AI 声明
 

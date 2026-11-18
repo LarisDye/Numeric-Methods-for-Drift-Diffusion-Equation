@@ -1,0 +1,624 @@
+{
+  "archive_date": "2026-11-18",
+  "paths_relative_to": "guisheng-dai/",
+  "checks": {
+    "walk-cost-20261118": {
+      "timing_rows": 162,
+      "passed_checks": 221,
+      "source_md5_verified": true
+    },
+    "gaussian-cost-20261118": {
+      "timing_rows": 378,
+      "passed_checks": 581,
+      "source_md5_verified": true
+    }
+  },
+  "presentation": {
+    "pages": 25,
+    "animation_page": 11,
+    "gif_frames": 41,
+    "powerpoint_open_and_animation_playback_verified": true
+  },
+  "files": [
+    {
+      "path": "config.R",
+      "bytes": 720,
+      "sha256": "bde11aa05a30258ac963d3224ff1fc71090611a57873b40f31a3147de1e340ee"
+    },
+    {
+      "path": "presentation/report/build_documents.ps1",
+      "bytes": 223,
+      "sha256": "9a596caa2bc3c72be8c24f7205c7365f21fb605d878a70cbd360d53c45e311c9"
+    },
+    {
+      "path": "presentation/report/build_slides.py",
+      "bytes": 1262,
+      "sha256": "f557c47d588ef7e88aad18ea188d517d281d93d8a57ed178870656e753eef87c"
+    },
+    {
+      "path": "presentation/report/figures/backward_walk_animation.gif",
+      "bytes": 1239228,
+      "sha256": "12f02456be1c4e4dcc44f28cf75c63a78652b0a6312d5d6aac2e3e185eaafd09"
+    },
+    {
+      "path": "presentation/report/figures/backward_walk_animation.json",
+      "bytes": 1353,
+      "sha256": "0784769ed00a3e057d8580a9e37eef148aed0d78b1227e75e4b746b4399d68a3"
+    },
+    {
+      "path": "presentation/report/figures/backward_walk_animation.pdf",
+      "bytes": 171512,
+      "sha256": "339de5dfdcebc4e128b30291bdaefa90375e64983408643c9677b9095a6ebf94"
+    },
+    {
+      "path": "presentation/report/figures/backward_walk_animation_poster.png",
+      "bytes": 109218,
+      "sha256": "1e03c3b6578bb2365d96db1f29f0e4b315be8ab2d6694b08a2bbb7af5ed3b8b3"
+    },
+    {
+      "path": "presentation/report/figures/backward_walk_gif_manifest.json",
+      "bytes": 1331,
+      "sha256": "2121710627252829e7d41174db5dfbe5321ee1fbabf2f90967223a5eec98a68d"
+    },
+    {
+      "path": "presentation/report/figures/cost.pdf",
+      "bytes": 21236,
+      "sha256": "d10e652348c70d9ab6cdf8111e8b9779c3611224ba738842ae5266be593f5f45"
+    },
+    {
+      "path": "presentation/report/figures/cost.png",
+      "bytes": 73225,
+      "sha256": "5d608b66f74d89d573bd154113c2bef370a8d054b47bffa1c38bca68f17ce33f"
+    },
+    {
+      "path": "presentation/report/figures/gaussian_curve_parallel.pdf",
+      "bytes": 41828,
+      "sha256": "d1c6a2849365351f3faf49e82e88cba55ae93e49e08fd9aacb4ab87884eebca2"
+    },
+    {
+      "path": "presentation/report/figures/gaussian_curve_parallel.png",
+      "bytes": 115081,
+      "sha256": "4f0084a9e7d4ea54dd4f4c05fb915977449e232e5ff4ec99f7d16b549adca6d0"
+    },
+    {
+      "path": "presentation/report/figures/gaussian_kernel_tradeoff.pdf",
+      "bytes": 46574,
+      "sha256": "ff00ad3f34fcedec9015d8beb7975e8939148c3e9d5636a694a3a5ea6ef07adb"
+    },
+    {
+      "path": "presentation/report/figures/gaussian_kernel_tradeoff.png",
+      "bytes": 117775,
+      "sha256": "8080ff313d1d4edea752aa1dcb3167d17341145c39b307c6b8fa874f8b5b6769"
+    },
+    {
+      "path": "presentation/report/figures/grid.pdf",
+      "bytes": 21317,
+      "sha256": "2e797eb62c15a0e07be5e453fd458872b80a4f601f6d3a477fa054f28c497896"
+    },
+    {
+      "path": "presentation/report/figures/grid.png",
+      "bytes": 69267,
+      "sha256": "8de68f89f7c19c26ee4668d767b1266af9f0c04b2bf373e60865f137ed5f535e"
+    },
+    {
+      "path": "presentation/report/figures/kernel.pdf",
+      "bytes": 25658,
+      "sha256": "48c32bac7c4d4dcb985e89d1429cb4c752c3b0e31d7ba51ac63365aa2e034562"
+    },
+    {
+      "path": "presentation/report/figures/kernel.png",
+      "bytes": 106501,
+      "sha256": "397768a801b3dafeb651c806da835eb739f33791acdaa6d33267532181df94b9"
+    },
+    {
+      "path": "presentation/report/figures/mc_error.pdf",
+      "bytes": 33645,
+      "sha256": "77a843fa2e5522d5a28b89f4cdcb992099285ffa9e8608a474aaa8675e9f7da6"
+    },
+    {
+      "path": "presentation/report/figures/mc_error.png",
+      "bytes": 103075,
+      "sha256": "961fa3c53de7c59424b4572341b4d81034a77e47bb65ab7d55bf6c0711f6cae4"
+    },
+    {
+      "path": "presentation/report/figures/mc_grid.pdf",
+      "bytes": 20407,
+      "sha256": "46a47615e7534ef32baf4dc5bd64585384625ffdcb141ba564dcaa73398730e4"
+    },
+    {
+      "path": "presentation/report/figures/mc_grid.png",
+      "bytes": 92606,
+      "sha256": "12d2a44eb992383db980ccd3b84e9788caff2d99636eb2ac3b57bfce7cf3fa2f"
+    },
+    {
+      "path": "presentation/report/figures/parallel_time.pdf",
+      "bytes": 23037,
+      "sha256": "a08c27ca1e3a34ddb5efc127b25e1e7c72a3226c6c090b3efdaf174d767331e3"
+    },
+    {
+      "path": "presentation/report/figures/parallel_time.png",
+      "bytes": 86419,
+      "sha256": "c86ab674fbf4bac0e5add69ffeff93e537afcaf791346599426d7972a0ca09ad"
+    },
+    {
+      "path": "presentation/report/figures/speedup.pdf",
+      "bytes": 20656,
+      "sha256": "57d61ae0c4c713bf73a7c1f79af1b6d18bb4bc79819499acf72a53a318424582"
+    },
+    {
+      "path": "presentation/report/figures/speedup.png",
+      "bytes": 107635,
+      "sha256": "6b42df48846b762eec74bf2dd08938f289304ea4f981aa5148817c2430d4aa09"
+    },
+    {
+      "path": "presentation/report/figures/walk_cost_coupled.pdf",
+      "bytes": 37595,
+      "sha256": "9476f6cbf89ce1b7333ef15452d6b6959eeb32e9cdefe847c5f344152adda42e"
+    },
+    {
+      "path": "presentation/report/figures/walk_cost_coupled.png",
+      "bytes": 84898,
+      "sha256": "de8d78b9a760de3b16b599c6fc6abcfffd2ad8eeefea62b9d2d23a3a26e72ed5"
+    },
+    {
+      "path": "presentation/report/figures/walk_cost_grid.pdf",
+      "bytes": 34275,
+      "sha256": "d7f2da1e3c36c06f8aeab2a268a1c525c5da32e7b6b06c4b50e518bcdb476bb0"
+    },
+    {
+      "path": "presentation/report/figures/walk_cost_grid.png",
+      "bytes": 82375,
+      "sha256": "d362f7fa4d044beeae4f9f44ada1f0458b6fd959a66d985d1366378430eb4fe3"
+    },
+    {
+      "path": "presentation/report/figures/walk_cost_parallel.pdf",
+      "bytes": 42046,
+      "sha256": "e0b028a962309fdaf3ea09b04c0282e5583664848f9ac312ef3288c7b0dd2f50"
+    },
+    {
+      "path": "presentation/report/figures/walk_cost_parallel.png",
+      "bytes": 105270,
+      "sha256": "026eb82469d3c4c09c3c09e53acdc137c2ac5a35975fd07786b97676aab5b958"
+    },
+    {
+      "path": "presentation/report/slides.pdf",
+      "bytes": 625371,
+      "sha256": "af664776ba05dde695aad8203025962a3b4e1550533368b0d25b712aa7c69a05"
+    },
+    {
+      "path": "presentation/report/slides.pptx",
+      "bytes": 5822666,
+      "sha256": "6ca0c7ab68143d8a375b7173532853cfb3823c8806e58458cb1a4d2d7154fd81"
+    },
+    {
+      "path": "presentation/report/slides.tex",
+      "bytes": 29427,
+      "sha256": "83d4be1ec5c980fb5d28a2a53af43547103e9217ff474ad8aae09029298362a2"
+    },
+    {
+      "path": "presentation/scripts/build_backward_walk_animation.py",
+      "bytes": 7301,
+      "sha256": "9ed94b0dcf8e6cf9da49b0d8a7b4100d3d1d2b68937cf375934fccd70bb5e8d0"
+    },
+    {
+      "path": "presentation/scripts/build_pptx_from_pdf.py",
+      "bytes": 11833,
+      "sha256": "a5ff4a8db4ca522301450d9fd95091a4c3bd2537828fd78c560d3d220bc9b065"
+    },
+    {
+      "path": "presentation/scripts/export_backward_walk_gif.py",
+      "bytes": 7971,
+      "sha256": "bc0e14fb11470ea8b7a53f1536c257df688717477de4f0f8666308a021d0eb34"
+    },
+    {
+      "path": "R/bootstrap.R",
+      "bytes": 1269,
+      "sha256": "cccbf081e808b406d38f6921079195b53e4465ebcc4ca27b96ba75f978f10749"
+    },
+    {
+      "path": "R/gaussian_convolution.R",
+      "bytes": 2282,
+      "sha256": "1d556b8000cfa2a1311d0f2f0407a332cd06150fac8ddf79c7bcf86a5a3bf0cc"
+    },
+    {
+      "path": "R/metrics.R",
+      "bytes": 1041,
+      "sha256": "9a729b72931889aba321c4255a5c5bd556a918cf46637bf5fafdabff634e2f74"
+    },
+    {
+      "path": "R/parallel.R",
+      "bytes": 955,
+      "sha256": "853c3fe1ab1583c68c752d2f413cb453d081b25a7dce5c381291871896b5fa0f"
+    },
+    {
+      "path": "R/problem.R",
+      "bytes": 2123,
+      "sha256": "7eb2c60c103130e46d6ebc6118f137fb8927ab780b8f8873a0b6240ad7dc3db4"
+    },
+    {
+      "path": "R/random_walk.R",
+      "bytes": 4176,
+      "sha256": "71911a6941a5c9c37dc3d749b11850797115bd60a3233acc055ad9202ba8ae9d"
+    },
+    {
+      "path": "R/rng.R",
+      "bytes": 962,
+      "sha256": "7b2917a2db73bcd0a06431e12510a764ce97f7aea64abc240a13b31d24012baf"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/accuracy_postprocess.txt",
+      "bytes": 476,
+      "sha256": "8886d83ac1a31a7e8239c2efb81cab86538986cd95d43185b28820798b86806c"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/batch_sizes.csv",
+      "bytes": 610,
+      "sha256": "11477c74588290a291541951a0b6715532b736f3e025acdfca0254d856cc502f"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/compiler_and_teams.rds",
+      "bytes": 169,
+      "sha256": "7c8e8addb54fc2d884f45d7b62bac854c4410ccacf3744e337745d176632252b"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/compiler_and_teams.txt",
+      "bytes": 640,
+      "sha256": "8f6e941a959e55ee4ffba2eadb9ff578de48c4ee35f0516a0fc51a28a4f5da2f"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/COMPLETED",
+      "bytes": 11,
+      "sha256": "acb85951ac6a4b52ee9e669e4b3d935eeb83af3cb7ed64b2ba056489365f494d"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/config.R",
+      "bytes": 1128,
+      "sha256": "30b6b74f8d86b05920de0fd6cdc9268c98693553364ff617c696efa3543e85c8"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/config.rds",
+      "bytes": 733,
+      "sha256": "be4df106ad059972629114acb1d793a12464c2fe9238cc509b1df45665300db6"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/configurations.csv",
+      "bytes": 979,
+      "sha256": "8466c1ab18517f8a3266004f04703019b15f53a7b4f7bd1f5cc7d168dc415202"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/environment.txt",
+      "bytes": 918,
+      "sha256": "59568c42f035ba28fa6f8bfb1e9e4686b68ca403490641bb9682632583cb4bb2"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/plot_source_hashes.csv",
+      "bytes": 77,
+      "sha256": "90e8fa6b2c14156ce9441e03de5b2091a030d3a39afef2f34485533f57e30ea0"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/postprocess_source_hashes.csv",
+      "bytes": 89,
+      "sha256": "f2a1442e1bfae49ff889e224acd8f65eddf00817532d71da6ccfba8b378a4306"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/progress.log",
+      "bytes": 1539,
+      "sha256": "03702284eb1ed15a9b5c97b61e389e0433bc3ecbe1da24d6f07d7478add65938"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/raw/accuracy.csv",
+      "bytes": 1688,
+      "sha256": "f6d9bcb37aad3c17522542441fb9976d4f4dde7b5d3cf81bf9bdb4435181b84f"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/raw/accuracy_internal.csv",
+      "bytes": 1854,
+      "sha256": "15f6eca14f4c84ba40efac6ad729128c740a3b2b5620c4186545d802bfd2dd83"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/raw/checks.csv",
+      "bytes": 41406,
+      "sha256": "4806becf177aafa065f09b374547b2010ea5ccc973c03bf1f52ca2b7f88cf456"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/raw/records.rds",
+      "bytes": 13347,
+      "sha256": "8adb54c6cc4ef0f62f1e3181f67d99565cc18bebdfa54db23906a789d46ab9be"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/raw/timings.csv",
+      "bytes": 47141,
+      "sha256": "5334ea4b266cad0b690801d19a187f4b7a92fc958ea4d2d975f949b063ece4d5"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/README.txt",
+      "bytes": 5126,
+      "sha256": "190e480e33c571954be345f015d4a7c64ecec0fe24e69e15d38507b7c24291ef"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/runtime_seconds.txt",
+      "bytes": 18,
+      "sha256": "19e9c33ff68645ad4191aaa641c8adaa8a343bd72528e46d3032c226ac73289e"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/source/08_benchmark_gaussian_cost.R",
+      "bytes": 10532,
+      "sha256": "89a92489da3528c8b512f90e6e9d7fc5efa11f29988810fffb00db34d12bf18c"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/source/08a_gaussian_internal_rmse.R",
+      "bytes": 2768,
+      "sha256": "e116c38b98a2510dadff2bc57e78ddfc723a956cbe7ab3a538b15290cb5b1e7c"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/source/09_plot_gaussian_cost.py",
+      "bytes": 9949,
+      "sha256": "5652a102b22780a4414b0c5362ab7afe2f5cf16a800e5b1f373f0afbae744c6a"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/source/bootstrap.R",
+      "bytes": 1269,
+      "sha256": "cccbf081e808b406d38f6921079195b53e4465ebcc4ca27b96ba75f978f10749"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/source/gaussian_convolution.cpp",
+      "bytes": 5378,
+      "sha256": "e90610f6858090b618c14173d0ce16f15960cdc9a7317ba365e058d4f2da9f57"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/source/gaussian_convolution.R",
+      "bytes": 2282,
+      "sha256": "1d556b8000cfa2a1311d0f2f0407a332cd06150fac8ddf79c7bcf86a5a3bf0cc"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/source/metrics.R",
+      "bytes": 1041,
+      "sha256": "9a729b72931889aba321c4255a5c5bd556a918cf46637bf5fafdabff634e2f74"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/source/parallel.R",
+      "bytes": 955,
+      "sha256": "853c3fe1ab1583c68c752d2f413cb453d081b25a7dce5c381291871896b5fa0f"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/source/problem.R",
+      "bytes": 2123,
+      "sha256": "7eb2c60c103130e46d6ebc6118f137fb8927ab780b8f8873a0b6240ad7dc3db4"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/source/random_walk.cpp",
+      "bytes": 8426,
+      "sha256": "6fae1ccb02f64b52ddd14de2be59c4b1321ac01628d0499d42fe483ee0b9a5c5"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/source_hashes.csv",
+      "bytes": 480,
+      "sha256": "5bf8fe1777fdcbd5ccb4ad0e682b14b1020f3d5acfc2afa49dfe80ec8cf628e2"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/summary/summary.csv",
+      "bytes": 5277,
+      "sha256": "af7acf092269dc2495e9372e9776c51791825f9a131c535f1e27c43d1e0425d1"
+    },
+    {
+      "path": "results/gaussian-cost-20261118/summary/summary.rds",
+      "bytes": 1888,
+      "sha256": "d1347e1a769a883f35deaef27ac32593da95187c869540476a57f4011dbd89da"
+    },
+    {
+      "path": "results/openmp-final-20261117/summary/grid.csv",
+      "bytes": 401,
+      "sha256": "a550f8d691f5cb9ce204b4304c2dc5a607786f37fe550f449cc12248fd948df3"
+    },
+    {
+      "path": "results/openmp-final-20261117/summary/kernel.csv",
+      "bytes": 2063,
+      "sha256": "a24a6b33fe14cef054b54f3f90b32d793e8d51bd8d4e2d76e6b6cb0837fabcbb"
+    },
+    {
+      "path": "results/openmp-final-20261117/summary/mc.csv",
+      "bytes": 1953,
+      "sha256": "8190b510b3e8599a7c48c5d9d410dc07b845dc6534508199ac6e069b8de766db"
+    },
+    {
+      "path": "results/walk-cost-20261118/compiler_and_teams.rds",
+      "bytes": 203,
+      "sha256": "8c2f95929b755e1f3be3781ca5d01d158e0a430bba1cd92bfea09de02d036a10"
+    },
+    {
+      "path": "results/walk-cost-20261118/compiler_and_teams.txt",
+      "bytes": 986,
+      "sha256": "61832e672bb03b1546b22c1bea6840d8f460f4a94deacd4a9049ba7850662636"
+    },
+    {
+      "path": "results/walk-cost-20261118/COMPLETED",
+      "bytes": 11,
+      "sha256": "acb85951ac6a4b52ee9e669e4b3d935eeb83af3cb7ed64b2ba056489365f494d"
+    },
+    {
+      "path": "results/walk-cost-20261118/config.R",
+      "bytes": 644,
+      "sha256": "9210bd6de3efe3fbbef4b66d27131faabcb72fd2cb43e98d1fdc351a41b93aa6"
+    },
+    {
+      "path": "results/walk-cost-20261118/config.rds",
+      "bytes": 476,
+      "sha256": "71d7d2b376b10c990bdb55af672c4e1c3f5f5aba2c2a31c7ccfba315376bccc9"
+    },
+    {
+      "path": "results/walk-cost-20261118/configurations.csv",
+      "bytes": 1311,
+      "sha256": "3504d47b6ee51be8643ca09b071a415e271d95ba7b4c8b7cc92b7c82889a3fcf"
+    },
+    {
+      "path": "results/walk-cost-20261118/environment.txt",
+      "bytes": 896,
+      "sha256": "c168377ff57afcf45b6180748a67c9530917322b6115e323769d5fe8fbd05ec2"
+    },
+    {
+      "path": "results/walk-cost-20261118/progress.log",
+      "bytes": 1718,
+      "sha256": "fe481491ee319123831b7691304bba9225092acf3990bf8c0726d809a90fea8f"
+    },
+    {
+      "path": "results/walk-cost-20261118/raw/checks.csv",
+      "bytes": 10080,
+      "sha256": "4db424bfd2fa80fc0e9220e5c6bc1f06d83c09c59dbe081deb17a963e5db4465"
+    },
+    {
+      "path": "results/walk-cost-20261118/raw/timings.csv",
+      "bytes": 30682,
+      "sha256": "e20e3fecff9a5cc4b44b8a0c6b940163541b01b702c002f899d36624c89da81d"
+    },
+    {
+      "path": "results/walk-cost-20261118/raw/timings.rds",
+      "bytes": 7889,
+      "sha256": "5abd811d8aa796c60314a88919ae8f7aa69462366790679302d4c368c01f6a4c"
+    },
+    {
+      "path": "results/walk-cost-20261118/README.md",
+      "bytes": 4649,
+      "sha256": "fb1139ca2a6aa2dea68135a93782186495820c13761f447652e069ca6df2e9a1"
+    },
+    {
+      "path": "results/walk-cost-20261118/runtime_seconds.txt",
+      "bytes": 18,
+      "sha256": "8a06844dbcb3c49c7916bf552fda24a46a8ea7a4dde149d8dfffb42b73f1a8f3"
+    },
+    {
+      "path": "results/walk-cost-20261118/seed_manifest.rds",
+      "bytes": 19981,
+      "sha256": "c99836fca93c5c3d82dd247e6be7df607db358f90d395fdeb09c5dc309e3575b"
+    },
+    {
+      "path": "results/walk-cost-20261118/source/06_benchmark_walk_cost.R",
+      "bytes": 7756,
+      "sha256": "8cd369d47166401d931c83f3627cff88cda4636ab40da5b1565385e71f03176f"
+    },
+    {
+      "path": "results/walk-cost-20261118/source/07_plot_walk_cost.py",
+      "bytes": 9540,
+      "sha256": "87442ef6ebd6227e358e9ae4ec8fde5560d6e3659d2c4295c01959b09eae586e"
+    },
+    {
+      "path": "results/walk-cost-20261118/source/bootstrap.R",
+      "bytes": 1269,
+      "sha256": "cccbf081e808b406d38f6921079195b53e4465ebcc4ca27b96ba75f978f10749"
+    },
+    {
+      "path": "results/walk-cost-20261118/source/metrics.R",
+      "bytes": 1041,
+      "sha256": "9a729b72931889aba321c4255a5c5bd556a918cf46637bf5fafdabff634e2f74"
+    },
+    {
+      "path": "results/walk-cost-20261118/source/problem.R",
+      "bytes": 2123,
+      "sha256": "7eb2c60c103130e46d6ebc6118f137fb8927ab780b8f8873a0b6240ad7dc3db4"
+    },
+    {
+      "path": "results/walk-cost-20261118/source/random_walk.cpp",
+      "bytes": 8426,
+      "sha256": "6fae1ccb02f64b52ddd14de2be59c4b1321ac01628d0499d42fe483ee0b9a5c5"
+    },
+    {
+      "path": "results/walk-cost-20261118/source/random_walk.R",
+      "bytes": 4176,
+      "sha256": "71911a6941a5c9c37dc3d749b11850797115bd60a3233acc055ad9202ba8ae9d"
+    },
+    {
+      "path": "results/walk-cost-20261118/source/random_walk_serial.cpp",
+      "bytes": 8578,
+      "sha256": "f91d69d47189eab67b5e30cd442f7f03c3506cd2f4c08225a53a4a173e7c6eda"
+    },
+    {
+      "path": "results/walk-cost-20261118/source/rng.R",
+      "bytes": 962,
+      "sha256": "7b2917a2db73bcd0a06431e12510a764ce97f7aea64abc240a13b31d24012baf"
+    },
+    {
+      "path": "results/walk-cost-20261118/source/slides-delivered.tex",
+      "bytes": 22823,
+      "sha256": "e7d4158e418af893a233bff587f44ff3ec09cae85a455e873d6670d3b21e46ff"
+    },
+    {
+      "path": "results/walk-cost-20261118/source_hashes.csv",
+      "bytes": 508,
+      "sha256": "b5197ed9cbbaffdcd096edbc6ea61a690c7e95fa172bdecd26ddf4a45f333d4a"
+    },
+    {
+      "path": "results/walk-cost-20261118/summary/summary.csv",
+      "bytes": 4522,
+      "sha256": "3fcc34d3e141bedbec046f7efa8ee7ef28ffa8c1018ca82daa478a64ceee384f"
+    },
+    {
+      "path": "scripts/00_setup.R",
+      "bytes": 294,
+      "sha256": "b310af6e38708b3b42ee9659d6b0b053c4abd054d08feb39d5926cb43c9467ce"
+    },
+    {
+      "path": "scripts/01_openmp_tests.R",
+      "bytes": 2662,
+      "sha256": "9610482cf3ec356ebdcdb46f85f35a324a508889abc59da29337efeadc6fc541"
+    },
+    {
+      "path": "scripts/01_tests.R",
+      "bytes": 4851,
+      "sha256": "2c6b188fe88fdb1f4e08cc99903245f8cfc19c6bac15f93f63f1b0756703da2a"
+    },
+    {
+      "path": "scripts/02_run.R",
+      "bytes": 18134,
+      "sha256": "801701e38d9ca1307b382f1cb361e29a97b78044f6f96036e0e2881ce31e4735"
+    },
+    {
+      "path": "scripts/03_summarise_plot.py",
+      "bytes": 14492,
+      "sha256": "05dd67c2dd56b87a11fadfee99ccfdaac6dea010a1d19994dd9cdce1b97e3c67"
+    },
+    {
+      "path": "scripts/04_build_documents.py",
+      "bytes": 29737,
+      "sha256": "c464ab8be98ac8473aa16f52dd526c6dbf860c5ba45234e1946490ad4869d120"
+    },
+    {
+      "path": "scripts/05_build_pptx.py",
+      "bytes": 14277,
+      "sha256": "05caefc509364819166cdac521d0510b9b41452fa3a57fba34f59320776eb32e"
+    },
+    {
+      "path": "scripts/06_benchmark_walk_cost.R",
+      "bytes": 7756,
+      "sha256": "8cd369d47166401d931c83f3627cff88cda4636ab40da5b1565385e71f03176f"
+    },
+    {
+      "path": "scripts/07_plot_walk_cost.py",
+      "bytes": 9540,
+      "sha256": "87442ef6ebd6227e358e9ae4ec8fde5560d6e3659d2c4295c01959b09eae586e"
+    },
+    {
+      "path": "scripts/08_benchmark_gaussian_cost.R",
+      "bytes": 10638,
+      "sha256": "23f8842f200aea4419503f57e1e289ab52a79aecea017a74ee4d4ee10cdc33ce"
+    },
+    {
+      "path": "scripts/08a_gaussian_internal_rmse.R",
+      "bytes": 2768,
+      "sha256": "e116c38b98a2510dadff2bc57e78ddfc723a956cbe7ab3a538b15290cb5b1e7c"
+    },
+    {
+      "path": "scripts/09_plot_gaussian_cost.py",
+      "bytes": 9949,
+      "sha256": "5652a102b22780a4414b0c5362ab7afe2f5cf16a800e5b1f373f0afbae744c6a"
+    },
+    {
+      "path": "src/gaussian_convolution.cpp",
+      "bytes": 5378,
+      "sha256": "e90610f6858090b618c14173d0ce16f15960cdc9a7317ba365e058d4f2da9f57"
+    },
+    {
+      "path": "src/random_walk.cpp",
+      "bytes": 8426,
+      "sha256": "6fae1ccb02f64b52ddd14de2be59c4b1321ac01628d0499d42fe483ee0b9a5c5"
+    }
+  ]
+}

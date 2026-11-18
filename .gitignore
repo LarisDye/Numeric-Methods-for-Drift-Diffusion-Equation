@@ -13,6 +13,13 @@ __pycache__/
 *.toc
 *.vrb
 *.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# Presentation build caches and local recovery copies; retain final PDF/PPTX.
+guisheng-dai/presentation/report/.build-*/
+guisheng-dai/presentation/report/backups/
+~$*.pptx
 
 # R session files and editor-local settings.
 .Rhistory

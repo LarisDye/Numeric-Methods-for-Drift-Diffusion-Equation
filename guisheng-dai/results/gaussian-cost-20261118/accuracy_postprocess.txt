@@ -1,0 +1,6 @@
+Accuracy-only postprocessing; original raw timings and accuracy.csv are unchanged.
+The original raw accuracy.csv field rmse includes all N+1 output nodes.
+summary.csv and summary.rds now set rmse=rmse_internal (N-1 internal nodes).
+Both rmse_all and rmse_internal are retained, with fresh checks in raw/accuracy_internal.csv.
+The numerical source matches source_hashes.csv; only the current benchmark script was corrected for future runs.
+Completed: 2026-11-18 15:06:23

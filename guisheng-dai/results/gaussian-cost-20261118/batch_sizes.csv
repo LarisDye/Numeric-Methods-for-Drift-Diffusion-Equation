@@ -1,0 +1,15 @@
+"config_id","t_input","t_solve","t_reused_new_input"
+"kernel_width_N512_c1_p2",1477,1549,733
+"kernel_width_N512_c2_p2",1430,1053,527
+"kernel_width_N512_c3_p2",789,728,438
+"kernel_width_N512_c4_p2",1154,591,374
+"kernel_width_N512_c6_p2",1112,376,268
+"kernel_width_N512_c8_p2",1003,350,228
+"parallel_small_N512_c6_p1",1047,265,116
+"parallel_small_N512_c6_p2",777,402,280
+"parallel_small_N512_c6_p4",1130,735,387
+"parallel_small_N512_c6_p8",1115,796,444
+"parallel_large_N8192_c6_p1",84,2,2
+"parallel_large_N8192_c6_p2",74,3,3
+"parallel_large_N8192_c6_p4",87,5,4
+"parallel_large_N8192_c6_p8",79,9,8

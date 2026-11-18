@@ -5,3 +5,4 @@ guisheng-dai/src/** -text
 guisheng-dai/scripts/** -text
 guisheng-dai/config.R -text
 guisheng-dai/results/** -text
+guisheng-dai/presentation/** -text

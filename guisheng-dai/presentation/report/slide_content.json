@@ -1,0 +1,123 @@
+[
+  {
+    "title": "漂移扩散方程数值实验",
+    "body": [
+      "反向随机游走与 Gaussian 宽核直接卷积",
+      "临时实验报告 · C++ OpenMP",
+      "2026年11月17日"
+    ],
+    "notes": "模型与算法：numeric-experiment-plan.md。并行依据：idea.md 与课程 computer-skill/openmp-basics.md。实测数据：results/openmp-final-20261117/raw/ 与 summary/。Windows11，i7-11800H，R4.6.1，RcppArmadillo15.6.0-1。R 层串行组织实验；C++ OpenMP。原始记录保留随机状态和计时。23 项串行 E0 与另 7 项 OpenMP 集成核验分开记录。t_prepare_call=0，调用内准备及结果包装包含在 t_solve；seedman$get 随机流分配在计时外。t_openmp_init 是首次请求该线程数并核验的 R 包装调用单次观测，包含检查且可能复用 libgomp 既有线程；t_once 只加该观测，不是新 R 进程端到端冷启动，也不是纯 C++ 核心耗时。略超理想线的实测加速受计时、调度及频率变化影响，不是性能保证。"
+  },
+  {
+    "title": "模型与比较任务",
+    "body": [
+      "uₜ = 0.2uₓ + 0.05uₓₓ，0 < x < 1，T = 0.5",
+      "u(0,t) = u(1,t) = 0，f(x) = exp(−2x) sin(πx)",
+      "解析解：exp[−2x − (0.05π² + 0.2)t] sin(πx)",
+      "内部 RMSE 与边界残差分开记录",
+      "R 层串行组织；C++ OpenMP 比较 1、2、4 线程"
+    ],
+    "notes": "模型与算法：numeric-experiment-plan.md。并行依据：idea.md 与课程 computer-skill/openmp-basics.md。实测数据：results/openmp-final-20261117/raw/ 与 summary/。Windows11，i7-11800H，R4.6.1，RcppArmadillo15.6.0-1。R 层串行组织实验；C++ OpenMP。原始记录保留随机状态和计时。23 项串行 E0 与另 7 项 OpenMP 集成核验分开记录。t_prepare_call=0，调用内准备及结果包装包含在 t_solve；seedman$get 随机流分配在计时外。t_openmp_init 是首次请求该线程数并核验的 R 包装调用单次观测，包含检查且可能复用 libgomp 既有线程；t_once 只加该观测，不是新 R 进程端到端冷启动，也不是纯 C++ 核心耗时。略超理想线的实测加速受计时、调度及频率变化影响，不是性能保证。"
+  },
+  {
+    "title": "反向随机游走",
+    "body": [
+      "p± = Dτ/h² ± aτ/(2h)，p₀ = 1 − 2Dτ/h²",
+      "从查询点出发，逐步吸收，触边贡献为零",
+      "分母包含全部 M 条路径，每查询点固定 16 个逻辑块",
+      "OpenMP 分配块，私有 RNG，按逻辑块顺序归约",
+      "23 项串行 E0 通过；另 7 项 OpenMP 集成核验"
+    ],
+    "notes": "模型与算法：numeric-experiment-plan.md。并行依据：idea.md 与课程 computer-skill/openmp-basics.md。实测数据：results/openmp-final-20261117/raw/ 与 summary/。Windows11，i7-11800H，R4.6.1，RcppArmadillo15.6.0-1。R 层串行组织实验；C++ OpenMP。原始记录保留随机状态和计时。23 项串行 E0 与另 7 项 OpenMP 集成核验分开记录。t_prepare_call=0，调用内准备及结果包装包含在 t_solve；seedman$get 随机流分配在计时外。t_openmp_init 是首次请求该线程数并核验的 R 包装调用单次观测，包含检查且可能复用 libgomp 既有线程；t_once 只加该观测，不是新 R 进程端到端冷启动，也不是纯 C++ 核心耗时。略超理想线的实测加速受计时、调度及频率变化影响，不是性能保证。"
+  },
+  {
+    "title": "随机游走的两类误差",
+    "chart": "mc",
+    "body": [
+      "每配置 30 批，误差按单批预算汇总",
+      "增大 M 降低抽样方差，总误差还含离散偏差"
+    ],
+    "notes": "模型与算法：numeric-experiment-plan.md。并行依据：idea.md 与课程 computer-skill/openmp-basics.md。实测数据：results/openmp-final-20261117/raw/ 与 summary/。Windows11，i7-11800H，R4.6.1，RcppArmadillo15.6.0-1。R 层串行组织实验；C++ OpenMP。原始记录保留随机状态和计时。23 项串行 E0 与另 7 项 OpenMP 集成核验分开记录。t_prepare_call=0，调用内准备及结果包装包含在 t_solve；seedman$get 随机流分配在计时外。t_openmp_init 是首次请求该线程数并核验的 R 包装调用单次观测，包含检查且可能复用 libgomp 既有线程；t_once 只加该观测，不是新 R 进程端到端冷启动，也不是纯 C++ 核心耗时。略超理想线的实测加速受计时、调度及频率变化影响，不是性能保证。"
+  },
+  {
+    "title": "固定路径数的网格影响",
+    "chart": "mcgrid",
+    "body": [
+      "M = 4096，查询 x = 1/8",
+      "离散偏差持续下降，有限样本总误差仍可能波动"
+    ],
+    "notes": "模型与算法：numeric-experiment-plan.md。并行依据：idea.md 与课程 computer-skill/openmp-basics.md。实测数据：results/openmp-final-20261117/raw/ 与 summary/。Windows11，i7-11800H，R4.6.1，RcppArmadillo15.6.0-1。R 层串行组织实验；C++ OpenMP。原始记录保留随机状态和计时。23 项串行 E0 与另 7 项 OpenMP 集成核验分开记录。t_prepare_call=0，调用内准备及结果包装包含在 t_solve；seedman$get 随机流分配在计时外。t_openmp_init 是首次请求该线程数并核验的 R 包装调用单次观测，包含检查且可能复用 libgomp 既有线程；t_once 只加该观测，不是新 R 进程端到端冷启动，也不是纯 C++ 核心耗时。略超理想线的实测加速受计时、调度及频率变化影响，不是性能保证。"
+  },
+  {
+    "title": "正确零边界的 Gaussian 直接卷积",
+    "body": [
+      "指数变换：v = exp(βx + γt)u，g = exp(βx)f",
+      "变换后 vₜ = Dvₓₓ，β = a/(2D)，γ = a²/(4D)",
+      "对 g 作两端奇延拓，形成周期 2 的辅助填充",
+      "Gaussian 宽窗口内积，再乘 exp(−βx − γT)",
+      "OpenMP 按输出点并行；每窗口用 Armadillo dot",
+      "先记录端点残差，再将输出端点设零"
+    ],
+    "notes": "模型与算法：numeric-experiment-plan.md。并行依据：idea.md 与课程 computer-skill/openmp-basics.md。实测数据：results/openmp-final-20261117/raw/ 与 summary/。Windows11，i7-11800H，R4.6.1，RcppArmadillo15.6.0-1。R 层串行组织实验；C++ OpenMP。原始记录保留随机状态和计时。23 项串行 E0 与另 7 项 OpenMP 集成核验分开记录。t_prepare_call=0，调用内准备及结果包装包含在 t_solve；seedman$get 随机流分配在计时外。t_openmp_init 是首次请求该线程数并核验的 R 包装调用单次观测，包含检查且可能复用 libgomp 既有线程；t_once 只加该观测，不是新 R 进程端到端冷启动，也不是纯 C++ 核心耗时。略超理想线的实测加速受计时、调度及频率变化影响，不是性能保证。"
+  },
+  {
+    "title": "卷积核大小的选择",
+    "body": [
+      "扩散标准差 s = √(2DT)",
+      "K = ceil(c s/h)，核长度 W = 2K + 1",
+      "c 决定物理覆盖，h 将距离换算成格点数",
+      "左右各 K 点加中心点，保持对称与边界抵消",
+      "N = 512，c = 3：K = 344，W = 689",
+      "截断后不重新归一化，更宽的核需要更多计算"
+    ],
+    "notes": "模型与算法：numeric-experiment-plan.md。并行依据：idea.md 与课程 computer-skill/openmp-basics.md。实测数据：results/openmp-final-20261117/raw/ 与 summary/。Windows11，i7-11800H，R4.6.1，RcppArmadillo15.6.0-1。R 层串行组织实验；C++ OpenMP。原始记录保留随机状态和计时。23 项串行 E0 与另 7 项 OpenMP 集成核验分开记录。t_prepare_call=0，调用内准备及结果包装包含在 t_solve；seedman$get 随机流分配在计时外。t_openmp_init 是首次请求该线程数并核验的 R 包装调用单次观测，包含检查且可能复用 libgomp 既有线程；t_once 只加该观测，不是新 R 进程端到端冷启动，也不是纯 C++ 核心耗时。略超理想线的实测加速受计时、调度及频率变化影响，不是性能保证。"
+  },
+  {
+    "title": "核大小与精度、成本",
+    "chart": "kernel",
+    "body": [
+      "固定 N = 512，C++ OpenMP 使用 2 个线程",
+      "W = 917：RMSE 1.62e-05；W = 1375：1.90e-10"
+    ],
+    "notes": "模型与算法：numeric-experiment-plan.md。并行依据：idea.md 与课程 computer-skill/openmp-basics.md。实测数据：results/openmp-final-20261117/raw/ 与 summary/。Windows11，i7-11800H，R4.6.1，RcppArmadillo15.6.0-1。R 层串行组织实验；C++ OpenMP。原始记录保留随机状态和计时。23 项串行 E0 与另 7 项 OpenMP 集成核验分开记录。t_prepare_call=0，调用内准备及结果包装包含在 t_solve；seedman$get 随机流分配在计时外。t_openmp_init 是首次请求该线程数并核验的 R 包装调用单次观测，包含检查且可能复用 libgomp 既有线程；t_once 只加该观测，不是新 R 进程端到端冷启动，也不是纯 C++ 核心耗时。略超理想线的实测加速受计时、调度及频率变化影响，不是性能保证。"
+  },
+  {
+    "title": "宽核下的网格求积误差",
+    "chart": "grid",
+    "body": [
+      "多项式初值 exp(−2x)x(1−x)，固定物理覆盖 c = 8",
+      "本组观测阶 4.01—4.03，限于当前输入和设置"
+    ],
+    "notes": "模型与算法：numeric-experiment-plan.md。并行依据：idea.md 与课程 computer-skill/openmp-basics.md。实测数据：results/openmp-final-20261117/raw/ 与 summary/。Windows11，i7-11800H，R4.6.1，RcppArmadillo15.6.0-1。R 层串行组织实验；C++ OpenMP。原始记录保留随机状态和计时。23 项串行 E0 与另 7 项 OpenMP 集成核验分开记录。t_prepare_call=0，调用内准备及结果包装包含在 t_solve；seedman$get 随机流分配在计时外。t_openmp_init 是首次请求该线程数并核验的 R 包装调用单次观测，包含检查且可能复用 libgomp 既有线程；t_once 只加该观测，不是新 R 进程端到端冷启动，也不是纯 C++ 核心耗时。略超理想线的实测加速受计时、调度及频率变化影响，不是性能保证。"
+  },
+  {
+    "title": "并行任务与计时范围",
+    "body": [
+      "R 串行组织；C++ OpenMP；求解含调用及 fork/join",
+      "新输入成本 = 输入准备 + 求解；无进程间通信",
+      "随机流分配在计时外；调用外准备字段为零",
+      "首次请求核验含 R 包装检查，可复用既有线程",
+      "本次单次观测：2 线程 1.001 ms，4 线程 0.534 ms",
+      "t_once 加该观测，不是新 R 进程端到端冷启动"
+    ],
+    "notes": "模型与算法：numeric-experiment-plan.md。并行依据：idea.md 与课程 computer-skill/openmp-basics.md。实测数据：results/openmp-final-20261117/raw/ 与 summary/。Windows11，i7-11800H，R4.6.1，RcppArmadillo15.6.0-1。R 层串行组织实验；C++ OpenMP。原始记录保留随机状态和计时。23 项串行 E0 与另 7 项 OpenMP 集成核验分开记录。t_prepare_call=0，调用内准备及结果包装包含在 t_solve；seedman$get 随机流分配在计时外。t_openmp_init 是首次请求该线程数并核验的 R 包装调用单次观测，包含检查且可能复用 libgomp 既有线程；t_once 只加该观测，不是新 R 进程端到端冷启动，也不是纯 C++ 核心耗时。略超理想线的实测加速受计时、调度及频率变化影响，不是性能保证。"
+  },
+  {
+    "title": "并行收益取决于任务规模",
+    "chart": "speedup",
+    "body": [
+      "本次四线程中位时间比：MC 3.49，卷积 3.66",
+      "个别加速比略高于线程数可受计时、频率及调度波动影响，不作超线性保证"
+    ],
+    "notes": "模型与算法：numeric-experiment-plan.md。并行依据：idea.md 与课程 computer-skill/openmp-basics.md。实测数据：results/openmp-final-20261117/raw/ 与 summary/。Windows11，i7-11800H，R4.6.1，RcppArmadillo15.6.0-1。R 层串行组织实验；C++ OpenMP。原始记录保留随机状态和计时。23 项串行 E0 与另 7 项 OpenMP 集成核验分开记录。t_prepare_call=0，调用内准备及结果包装包含在 t_solve；seedman$get 随机流分配在计时外。t_openmp_init 是首次请求该线程数并核验的 R 包装调用单次观测，包含检查且可能复用 libgomp 既有线程；t_once 只加该观测，不是新 R 进程端到端冷启动，也不是纯 C++ 核心耗时。略超理想线的实测加速受计时、调度及频率变化影响，不是性能保证。"
+  },
+  {
+    "title": "共同查询任务的精度与成本",
+    "chart": "cost",
+    "body": [
+      "共同 8 点、2 线程：MC M=16384 与卷积 c=2",
+      "新输入成本比 69.6；加首次请求观测后 16.0；限于本次问题"
+    ],
+    "notes": "模型与算法：numeric-experiment-plan.md。并行依据：idea.md 与课程 computer-skill/openmp-basics.md。实测数据：results/openmp-final-20261117/raw/ 与 summary/。Windows11，i7-11800H，R4.6.1，RcppArmadillo15.6.0-1。R 层串行组织实验；C++ OpenMP。原始记录保留随机状态和计时。23 项串行 E0 与另 7 项 OpenMP 集成核验分开记录。t_prepare_call=0，调用内准备及结果包装包含在 t_solve；seedman$get 随机流分配在计时外。t_openmp_init 是首次请求该线程数并核验的 R 包装调用单次观测，包含检查且可能复用 libgomp 既有线程；t_once 只加该观测，不是新 R 进程端到端冷启动，也不是纯 C++ 核心耗时。略超理想线的实测加速受计时、调度及频率变化影响，不是性能保证。"
+  }
+]
