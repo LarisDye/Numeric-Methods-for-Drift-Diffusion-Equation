@@ -1,0 +1,27 @@
+D=0.05, a=0.2, T=0.5, Dirichlet endpoints=0, single-thread float64.
+N=64 or 128; n=N^2/16; D*dt/h^2=0.4. Common output x=j/64.
+Snapshot times=0, 1/32, 1/8, 1/2. Timing covers one complete solve to T.
+C++ steady_clock: new buffers, factorization when applicable and time stepping.
+Excludes compilation, R dispatch and result wrapping, validation, stencil setup, initial sampling, scoring and I/O.
+Warm-up and pilot, then 9 randomly interleaved rounds. Order seed=2026; batch target=10 ms.
+Recorded UTC: 2026-11-16 13:50:02 UTC
+Rcpp 1.1.1
+R version 4.4.2 (2024-10-31)
+Platform: aarch64-apple-darwin20
+Running under: macOS 26.6.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+
+locale:
+[1] C.UTF-8/C.UTF-8/C.UTF-8/C/C.UTF-8/C.UTF-8
+
+time zone: Asia/Taipei
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+[1] compiler_4.4.2 tools_4.4.2    Rcpp_1.1.1    

@@ -1,0 +1,31 @@
+{
+  "drift": 0.2,
+  "diffusion": 0.05,
+  "eval_times": [
+    0.0,
+    0.03125,
+    0.125,
+    0.5
+  ],
+  "peak_height": 0.4452083532119013,
+  "peak_x": {
+    "baseline": 0.31954646338594583,
+    "center": 0.5,
+    "near": 0.22939205308037666,
+    "compact": 0.5
+  },
+  "gaussian_width": 0.08,
+  "peak_scale_multipliers": {
+    "center": 28.49333460556168,
+    "near": 92.24657035228984
+  },
+  "center_and_compact_fwhm": 0.1283323884249148,
+  "compact_radius": 0.1412723667789055,
+  "modes": 64,
+  "quadrature_nodes": 128,
+  "refinement": "double both mode count and Gauss-Legendre nodes",
+  "kernel_check": "adaptive Gauss-Kronrod quadrature; Dirichlet images -4..4",
+  "max_refinement_difference": 1.6042722705833512e-14,
+  "max_image_difference": 2.3869795029440866e-15,
+  "max_baseline_closed_form_difference": 2.3314683517128287e-15
+}

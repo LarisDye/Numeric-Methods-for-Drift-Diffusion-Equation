@@ -1,0 +1,69 @@
+{
+  "problem": {
+    "a": 0.2,
+    "D": 0.05,
+    "T": 0.5,
+    "x_min": 0.0,
+    "x_max": 1.0,
+    "boundary": "homogeneous_dirichlet",
+    "initial_condition": "eigenmode",
+    "name": "dirichlet_eigenmode"
+  },
+  "base_config": {
+    "constraint": "hard",
+    "steps": 2000,
+    "width": 32,
+    "layers": 2,
+    "interior_points": 1024,
+    "initial_points": 128,
+    "boundary_points": 64,
+    "learning_rate": 0.001,
+    "lambda_initial": 1.0,
+    "lambda_boundary": 1.0,
+    "seed": 7,
+    "points_seed": 2026,
+    "threads": 1,
+    "lbfgs_iterations": 0
+  },
+  "lbfgs_options": {
+    "lr": 1,
+    "max_iter": 400,
+    "max_eval": 800,
+    "history_size": 50,
+    "line_search_fn": "strong_wolfe",
+    "tolerance_grad": 1e-12,
+    "tolerance_change": 1e-15
+  },
+  "seeds": [
+    7,
+    17,
+    27
+  ],
+  "terminal_space_intervals": 64,
+  "spacetime_space_intervals": 256,
+  "spacetime_time_intervals": 40,
+  "residual_points": 512,
+  "test_seed": 102026,
+  "boundary_weights": [
+    0.1,
+    1,
+    10
+  ],
+  "environment": {
+    "python": "3.12.7",
+    "torch": "2.10.0",
+    "numpy": "1.26.4",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "processor": "arm",
+    "device": "cpu",
+    "dtype": "float64",
+    "torch_threads": 1
+  },
+  "hardware": [
+    "Chip: Apple M3",
+    "Total Number of Cores: 8 (4 Performance and 4 Efficiency)",
+    "Memory: 16 GB"
+  ],
+  "experiment_seconds": 65.09039024997037
+}
